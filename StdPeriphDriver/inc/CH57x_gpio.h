@@ -49,44 +49,44 @@ extern "C" {
 /**
  * @brief   GPIO_pins_remap_define
  */
-#define REMAP_RXD_PA2   0x00  /*!<默认映射（RXD/PA2） */
-#define REMAP_RXD_PA3   0x01  /*!<重映射（RXD/PA3） */
-#define REMAP_RXD_PA0   0x02  /*!<重映射（RXD/PA0） */
-#define REMAP_RXD_PA1   0x03  /*!<重映射（RXD/PA1） */
-#define REMAP_RXD_PA4   0x04  /*!<重映射（RXD/PA4） */
-#define REMAP_RXD_PA9   0x05  /*!<重映射（RXD/PA9） */
-#define REMAP_RXD_PA10  0x06  /*!<重映射（RXD/PA10） */
-#define REMAP_RXD_PA11  0x07  /*!<重映射（RXD/PA11） */
+#define REMAP_RXD_PA2   0x00  /*!<Default mapping (RXD/PA2) */
+#define REMAP_RXD_PA3   0x01  /*!<Remapped (RXD/PA3) */
+#define REMAP_RXD_PA0   0x02  /*!<Remapped (RXD/PA0) */
+#define REMAP_RXD_PA1   0x03  /*!<Remapped (RXD/PA1) */
+#define REMAP_RXD_PA4   0x04  /*!<Remapped (RXD/PA4) */
+#define REMAP_RXD_PA9   0x05  /*!<Remapped (RXD/PA9) */
+#define REMAP_RXD_PA10  0x06  /*!<Remapped (RXD/PA10) */
+#define REMAP_RXD_PA11  0x07  /*!<Remapped (RXD/PA11) */
 
-#define REMAP_TXD_PA3   0x00  /*!<默认映射（TXD/PA3） */
-#define REMAP_TXD_PA2   0x08  /*!<重映射（TXD/PA2） */
-#define REMAP_TXD_PA1   0x10  /*!<重映射（TXD/PA1） */
-#define REMAP_TXD_PA0   0x18  /*!<重映射（TXD/PA0） */
-#define REMAP_TXD_PA7   0x20  /*!<重映射（TXD/PA7） */
-#define REMAP_TXD_PA8   0x28  /*!<重映射（TXD/PA8） */
-#define REMAP_TXD_PA11  0x30  /*!<重映射（TXD/PA11） */
-#define REMAP_TXD_PA10  0x38  /*!<重映射（TXD/PA10） */
+#define REMAP_TXD_PA3   0x00  /*!<Default mapping (TXD/PA3) */
+#define REMAP_TXD_PA2   0x08  /*!<Remapped (TXD/PA2) */
+#define REMAP_TXD_PA1   0x10  /*!<Remapped (TXD/PA1) */
+#define REMAP_TXD_PA0   0x18  /*!<Remapped (TXD/PA0) */
+#define REMAP_TXD_PA7   0x20  /*!<Remapped (TXD/PA7) */
+#define REMAP_TXD_PA8   0x28  /*!<Remapped (TXD/PA8) */
+#define REMAP_TXD_PA11  0x30  /*!<Remapped (TXD/PA11) */
+#define REMAP_TXD_PA10  0x38  /*!<Remapped (TXD/PA10) */
 
-#define REMAP_TMR_DEFAULT   0x00   /*!<默认映射（PWM0/PA7，CAP_IN1/PA7，CAP_IN2/PA2） */
-#define REMAP_TMR_MODE1     0x40   /*!<重映射1 （PWM0/PA2，CAP_IN1/PA2，CAP_IN2/PA7） */
-#define REMAP_TMR_MODE2     0x80   /*!<重映射2（PWM0/PA4，CAP_IN1/PA4，CAP_IN2/PA9） */
-#define REMAP_TMR_MODE3     0xC0   /*!<重映射3（PWM0/PA9，CAP_IN1/PA9，CAP_IN2/PA4） */
+#define REMAP_TMR_DEFAULT   0x00   /*!<Default mapping (PWM0/PA7, CAP_IN1/PA7, CAP_IN2/PA2) */
+#define REMAP_TMR_MODE1     0x40   /*!<Remapping 1 (PWM0/PA2, CAP_IN1/PA2, CAP_IN2/PA7) */
+#define REMAP_TMR_MODE2     0x80   /*!<Remapping 2 (PWM0/PA4, CAP_IN1/PA4, CAP_IN2/PA9) */
+#define REMAP_TMR_MODE3     0xC0   /*!<Remapping 3 (PWM0/PA9, CAP_IN1/PA9, CAP_IN2/PA4) */
 
-#define REMAP_I2C_DEFAULT   0x00  /*!<默认映射（SCL/PA8，SDA/PA9） */
-#define REMAP_I2C_MODE1     0x200 /*!<重映射1 （SCL/PA0，SDA/PA1） */
-#define REMAP_I2C_MODE2     0x400 /*!<重映射2 （SCL/PA3，SDA/PA2） */
-#define REMAP_I2C_MODE3     0x600 /*!<重映射3 （SCL/PA5，SDA/PA6） */
+#define REMAP_I2C_DEFAULT   0x00  /*!<Default mapping (SCL/PA8, SDA/PA9) */
+#define REMAP_I2C_MODE1     0x200 /*!<Remapping 1 (SCL/PA0, SDA/PA1) */
+#define REMAP_I2C_MODE2     0x400 /*!<Remapping 2 (SCL/PA3, SDA/PA2) */
+#define REMAP_I2C_MODE3     0x600 /*!<Remapping 3 (SCL/PA5, SDA/PA6) */
 
 /**
  * @brief  Configuration GPIO Mode
  */
 typedef enum
 {
-    GPIO_ModeIN_Floating, //浮空输入
-    GPIO_ModeIN_PU,       //上拉输入
-    GPIO_ModeIN_PD,       //下拉输入
-    GPIO_ModeOut_PP_5mA,  //推挽输出最大5mA
-    GPIO_ModeOut_PP_20mA, //推挽输出最大20mA
+    GPIO_ModeIN_Floating, //Floating input
+    GPIO_ModeIN_PU,       //Pull-up input
+    GPIO_ModeIN_PD,       //Pull-down input
+    GPIO_ModeOut_PP_5mA,  //Push-pull output max 5mA
+    GPIO_ModeOut_PP_20mA, //Push-pull output max 20mA
 
 } GPIOModeTypeDef;
 
@@ -95,101 +95,101 @@ typedef enum
  */
 typedef enum
 {
-    GPIO_ITMode_LowLevel,  //低电平触发
-    GPIO_ITMode_HighLevel, //高电平触发
-    GPIO_ITMode_FallEdge,  //下降沿触发
-    GPIO_ITMode_RiseEdge,  //上升沿触发
+    GPIO_ITMode_LowLevel,  //Low level trigger
+    GPIO_ITMode_HighLevel, //High level trigger
+    GPIO_ITMode_FallEdge,  //Falling edge trigger
+    GPIO_ITMode_RiseEdge,  //Rising edge trigger
 
 } GPIOITModeTpDef;
 
 /**
- * @brief   GPIOA端口引脚模式配置
+ * @brief   GPIOA port pin mode configuration
  *
  * @param   pin     - PA0-PA15
- * @param   mode    - 输入输出类型
+ * @param   mode    - Input/output type
  */
 void GPIOA_ModeCfg(uint32_t pin, GPIOModeTypeDef mode);
 
 /**
- * @brief   GPIOA端口引脚输出置低
+ * @brief   GPIOA port pin output set low
  *
  * @param   pin     - PA0-PA15
  */
 #define GPIOA_ResetBits(pin)      (R32_PA_CLR = pin)
 
 /**
- * @brief   GPIOA端口引脚输出置高
+ * @brief   GPIOA port pin output set high
  *
  * @param   pin     - PA0-PA15
  */
 #define GPIOA_SetBits(pin)        (R32_PA_SET = pin)
 
 /**
- * @brief   GPIOA端口引脚输出电平翻转
+ * @brief   GPIOA port pin output level toggle
  *
  * @param   pin     - PA0-PA15
  */
 #define GPIOA_InverseBits(pin)    (R32_PA_OUT ^= pin)
 
 /**
- * @brief   GPIOA端口32位数据返回，低16位有效
+ * @brief   GPIOA port 32-bit data return, lower 16 bits valid
  *
- * @return  GPIOA端口32位数据
+ * @return  GPIOA port 32-bit data
  */
 #define GPIOA_ReadPort()          (R32_PA_PIN)
 
 /**
- * @brief   GPIOA端口引脚状态，0-引脚低电平，(!0)-引脚高电平
+ * @brief   GPIOA port pin status, 0-pin low level, (!0)-pin high level
  *
  * @param   pin     - PA0-PA15
  *
- * @return  GPIOA端口引脚状态
+ * @return  GPIOA port pin status
  */
 #define GPIOA_ReadPortPin(pin)    (R32_PA_PIN & (pin))
 
 /**
- * @brief   GPIOA引脚中断模式配置
+ * @brief   GPIOA pin interrupt mode configuration
  *
  * @param   pin     - PA0-PA15
- * @param   mode    - 触发类型
+ * @param   mode    - Trigger type
  */
 void GPIOA_ITModeCfg(uint32_t pin, GPIOITModeTpDef mode);
 
 /**
- * @brief   读取GPIOA端口中断标志状态
+ * @brief   Read GPIOA port interrupt flag status
  *
- * @return  GPIOA端口中断标志状态
+ * @return  GPIOA port interrupt flag status
  */
 #define GPIOA_ReadITFlagPort()       (R16_PA_INT_IF)
 
 /**
- * @brief   读取GPIOA端口引脚中断标志状态
+ * @brief   Read GPIOA port pin interrupt flag status
  *
  * @param   pin     - PA0-PA15
  *
- * @return  GPIOA端口引脚中断标志状态
+ * @return  GPIOA port pin interrupt flag status
  */
 #define GPIOA_ReadITFlagBit(pin)     (R16_PA_INT_IF & (pin))
 
 /**
- * @brief   清除GPIOA端口引脚中断标志状态
+ * @brief   Clear GPIOA port pin interrupt flag status
  *
  * @param   pin     - PA0-PA15
  */
 #define GPIOA_ClearITFlagBit(pin)    (R16_PA_INT_IF = pin)
 
 /**
- * @brief   外设功能引脚映射
+ * @brief   Peripheral function pin remapping
  *
- * @param   s       - 是否使能映射
- * @param   perph   - 写具体的映射关系，详见GPIO_pins_remap_define
+ * @param   s       - Whether to enable remapping
+ * @param   perph   - Specific remapping relationship, see GPIO_pins_remap_define
  */
 void GPIOPinRemap(FunctionalState s, uint16_t perph);
 
 /**
- * @brief   I/O pin数字功能控制
+ * @brief   I/O pin digital function control
  *
- * @param   s       - 是否打开对应I/O pin数字功能
+ * @param   s       - Whether to enable the corresponding I/O pin digital function
  * @param   pin     - PA0-PA15
  */
 void GPIOADigitalCfg(FunctionalState s, uint16_t pin);

@@ -17,14 +17,14 @@
 extern "C" {
 #endif
 
-/* HID类请求 */
+/* HID class requests */
 #define DEF_USB_GET_IDLE           0x02                                         /* get idle for key or mouse */
 #define DEF_USB_GET_PROTOCOL       0x03                                         /* get protocol for bios type */
 #define DEF_USB_SET_REPORT         0x09                                         /* set report for key */
 #define DEF_USB_SET_IDLE           0x0A                                         /* set idle for key or mouse */
 #define DEF_USB_SET_PROTOCOL       0x0B                                         /* set protocol for bios type */
 
-/* 以下缓存区是USB模块收发使用的数据缓冲区，总共9个通道（9块缓存），用户可根据实际使用的通道数定义相应缓存区 */
+/* The following buffer areas are data buffers used by the USB module for communication, a total of 9 channels (9 cache blocks), users can define corresponding buffer areas according to the actual number of channels used */
 extern uint8_t *pEP0_RAM_Addr; //ep0(64)+ep4_out(64)+ep4_in(64)
 extern uint8_t *pEP1_RAM_Addr; //ep1_out(64)+ep1_in(64)
 extern uint8_t *pEP2_RAM_Addr; //ep2_out(64)+ep2_in(64)
@@ -42,106 +42,106 @@ extern uint8_t *pEP3_RAM_Addr; //ep3_out(64)+ep3_in(64)
 #define pEP4_IN_DataBuf       (pEP0_RAM_Addr + 128)
 
 /**
- * @brief   USB设备功能初始化，4个端点，8个通道。
+ * @brief   USB device function initialization, 4 endpoints, 8 channels.
  */
 void USB_DeviceInit(void);
 
 /**
- * @brief   USB设备应答传输处理
+ * @brief   USB device response transfer processing
  */
 void USB_DevTransProcess(void);
 
 /**
- * @brief   端点1下传数据处理
+ * @brief   Endpoint 1 downstream data processing
  *
- * @param   l   - 待处理数据长度(<64B)
+ * @param   l   - Length of data to process (<64B)
  */
 void DevEP1_OUT_Deal(uint8_t l);
 
 /**
- * @brief   端点2下传数据处理
+ * @brief   Endpoint 2 downstream data processing
  *
- * @param   l   - 待处理数据长度(<64B)
+ * @param   l   - Length of data to process (<64B)
  */
 void DevEP2_OUT_Deal(uint8_t l);
 
 /**
- * @brief   端点3下传数据处理
+ * @brief   Endpoint 3 downstream data processing
  *
- * @param   l   - 待处理数据长度(<64B)
+ * @param   l   - Length of data to process (<64B)
  */
 void DevEP3_OUT_Deal(uint8_t l);
 
 /**
- * @brief   端点4下传数据处理
+ * @brief   Endpoint 4 downstream data processing
  *
- * @param   l   - 待处理数据长度(<64B)
+ * @param   l   - Length of data to process (<64B)
  */
 void DevEP4_OUT_Deal(uint8_t l);
 
 /**
- * @brief   端点1数据上传
+ * @brief   Endpoint 1 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  */
 void DevEP1_IN_Deal(uint8_t l);
 
 /**
- * @brief   端点2数据上传
+ * @brief   Endpoint 2 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  */
 void DevEP2_IN_Deal(uint8_t l);
 
 /**
- * @brief   端点3数据上传
+ * @brief   Endpoint 3 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  */
 void DevEP3_IN_Deal(uint8_t l);
 
 /**
- * @brief   端点4数据上传
+ * @brief   Endpoint 4 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  */
 void DevEP4_IN_Deal(uint8_t l);
 
 /**
- * @brief   查询端点1是否上传完成
+ * @brief   Check if endpoint 1 upload is completed
  *
- * @return  0-未完成  (!0)-已完成
+ * @return  0-Not completed  (!0)-Completed
  */
 #define EP1_GetINSta()    (R8_UEP1_CTRL & UEP_T_RES_NAK)
 
 /**
- * @brief   查询端点2是否上传完成
+ * @brief   Check if endpoint 2 upload is completed
  *
- * @return  0-未完成  (!0)-已完成
+ * @return  0-Not completed  (!0)-Completed
  */
 #define EP2_GetINSta()    (R8_UEP2_CTRL & UEP_T_RES_NAK)
 
 /**
- * @brief   查询端点3是否上传完成
+ * @brief   Check if endpoint 3 upload is completed
  *
- * @return  0-未完成  (!0)-已完成
+ * @return  0-Not completed  (!0)-Completed
  */
 #define EP3_GetINSta()    (R8_UEP3_CTRL & UEP_T_RES_NAK)
 
 /**
- * @brief   查询端点4是否上传完成
+ * @brief   Check if endpoint 4 upload is completed
  *
- * @return  0-未完成  (!0)-已完成
+ * @return  0-Not completed  (!0)-Completed
  */
 #define EP4_GetINSta()    (R8_UEP4_CTRL & UEP_T_RES_NAK)
 
 /**
- * @brief   关闭USB上拉电阻
+ * @brief   Disable USB pull-up resistor
  */
 #define USB_DisablePin()  (R16_PIN_ANALOG_IE &= ~(RB_PIN_USB_IE | RB_PIN_USB_DP_PU))
 
 /**
- * @brief   关闭USB
+ * @brief   Disable USB
  */
 #define USB_Disable()     (R32_USB_CONTROL = 0)
 

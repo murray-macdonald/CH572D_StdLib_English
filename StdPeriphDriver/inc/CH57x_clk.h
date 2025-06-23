@@ -18,7 +18,7 @@ extern "C" {
 #endif
 
 /**
- * @brief  系统主频定义
+ * @brief  System main frequency definition
  */
 typedef enum
 {
@@ -44,7 +44,7 @@ typedef enum
 } SYS_CLKTypeDef;
 
 /**
- * @brief  32M晶振电流挡位
+ * @brief  32MHz crystal oscillator current gear positions
  */
 typedef enum
 {
@@ -56,7 +56,7 @@ typedef enum
 } HSECurrentTypeDef;
 
 /**
- * @brief  32M晶振内部电容挡位
+ * @brief  32MHz crystal oscillator internal capacitance gear positions
  */
 typedef enum
 {
@@ -117,8 +117,8 @@ typedef enum
  */
 typedef enum
 {
-    RTC_TRIG_EVENT = 0, // RTC 触发事件
-    RTC_TMR_EVENT,      // RTC 周期定时事件
+    RTC_TRIG_EVENT = 0, // RTC trigger event
+    RTC_TMR_EVENT,      // RTC periodic timing event
 
 } RTC_EVENTTypeDef;
 
@@ -127,111 +127,111 @@ typedef enum
  */
 typedef enum
 {
-    RTC_TRIG_MODE = 0, // RTC 触发模式
-    RTC_TMR_MODE,      // RTC 周期定时模式
+    RTC_TRIG_MODE = 0, // RTC trigger mode
+    RTC_TMR_MODE,      // RTC periodic timing mode
 
 } RTC_MODETypeDef;
 
 /**
- * @brief   HSE晶体 偏置电流配置
+ * @brief   HSE crystal bias current configuration
  *
  * @param   c   - 75%,100%,125%,150%
  */
 void HSECFG_Current(HSECurrentTypeDef c);
 
 /**
- * @brief   HSE晶体 负载电容配置
+ * @brief   HSE crystal load capacitance configuration
  *
  * @param   c   - refer to HSECapTypeDef
  */
 void HSECFG_Capacitance(HSECapTypeDef c);
 
 /**
- * @brief   初始化 RTC时钟, 捕获周期数越高,初始化时间越长,时钟精度越高
+ * @brief   Initialize RTC clock, higher capture cycle count means longer initialization time but higher clock precision
  *
  * @param   cnt     - the total number of cycles captured by the oscillator
  *
- * @return  RTC时钟, 24~42KHz
+ * @return  RTC clock, 24~42KHz
  */
 uint32_t RTC_InitClock(RTC_OSCCntTypeDef cnt);
 
 /**
- * @brief   RTC时钟初始化当前时间
+ * @brief   Initialize RTC clock with current time
  *
- * @param   y       - 配置年，MAX_Y = BEGYEAR + 44
- * @param   mon     - 配置月，MAX_MON = 12
- * @param   d       - 配置日，MAX_D = 31
- * @param   h       - 配置小时，MAX_H = 23
- * @param   m       - 配置分钟，MAX_M = 59
- * @param   s       - 配置秒，MAX_S = 59
+ * @param   y       - configure year, MAX_Y = BEGYEAR + 44
+ * @param   mon     - configure month, MAX_MON = 12
+ * @param   d       - configure day, MAX_D = 31
+ * @param   h       - configure hour, MAX_H = 23
+ * @param   m       - configure minute, MAX_M = 59
+ * @param   s       - configure second, MAX_S = 59
  */
 void RTC_InitTime(uint16_t y, uint16_t mon, uint16_t d, uint16_t h, uint16_t m, uint16_t s);
 
 /**
- * @brief   获取当前时间
+ * @brief   Get current time
  *
- * @param   py      - 获取到的年，MAX_Y = BEGYEAR + 44
- * @param   pmon    - 获取到的月，MAX_MON = 12
- * @param   pd      - 获取到的日，MAX_D = 31
- * @param   ph      - 获取到的小时，MAX_H = 23
- * @param   pm      - 获取到的分钟，MAX_M = 59
- * @param   ps      - 获取到的秒，MAX_S = 59
+ * @param   py      - Retrieved year, MAX_Y = BEGYEAR + 44
+ * @param   pmon    - Retrieved month, MAX_MON = 12
+ * @param   pd      - Retrieved day, MAX_D = 31
+ * @param   ph      - Retrieved hour, MAX_H = 23
+ * @param   pm      - Retrieved minute, MAX_M = 59
+ * @param   ps      - Retrieved second, MAX_S = 59
  */
 void RTC_GetTime(uint16_t *py, uint16_t *pmon, uint16_t *pd, uint16_t *ph, uint16_t *pm, uint16_t *ps);
 
 /**
- * @brief   基于LSI时钟，配置当前RTC 周期数
+ * @brief   Configure current RTC cycle count based on LSI clock
  *
- * @param   cyc     - 配置周期计数初值，MAX_CYC = 0xA8BFFFFF = 2831155199
+ * @param   cyc     - Configure initial cycle count, MAX_CYC = 0xA8BFFFFF = 2831155199
  */
 void RTC_SetCycleLSI(uint32_t cyc);
 
 /**
- * @brief   基于LSI时钟，获取当前RTC 周期数
+ * @brief   Get current RTC cycle count based on LSI clock
  *
- * @return  当前周期数，MAX_CYC = 0xA8BFFFFF = 2831155199
+ * @return  Current cycle count, MAX_CYC = 0xA8BFFFFF = 2831155199
  */
 uint32_t RTC_GetCycleLSI(void);
 
 /**
- * @brief   RTC定时模式配置（注意定时基准固定为32768Hz）
+ * @brief   RTC timer mode configuration (note that the timer reference is fixed at 32768Hz)
  *
  * @param   t   - refer to RTC_TMRCycTypeDef
  */
 void RTC_TRIGFunCfg(uint32_t cyc);
 
 /**
- * @brief   RTC定时模式配置（注意定时基准固定为32768Hz）
+ * @brief   RTC timer mode configuration (note that the timer reference is fixed at 32768Hz)
  *
  * @param   t   - refer to RTC_TMRCycTypeDef
  */
 void RTC_TMRFunCfg(RTC_TMRCycTypeDef t);
 
 /**
- * @brief   RTC 模式功能关闭
+ * @brief   Disable RTC mode function
  *
- * @param   m   - 需要关闭的当前模式
+ * @param   m   - Current mode that needs to be closed
  */
 void RTC_ModeFunDisable(RTC_MODETypeDef m);
 
 /**
- * @brief   获取RTC中断标志
+ * @brief   Get RTC interrupt flag
  *
  * @param   f   - refer to RTC_EVENTTypeDef
  *
- * @return  中断标志状态
+ * @return  Interrupt flag status
  */
 uint8_t RTC_GetITFlag(RTC_EVENTTypeDef f);
 
 /**
- * @brief   清除RTC中断标志
+ * @brief   Clear RTC interrupt flag
  *
  * @param   f   - refer to RTC_EVENTTypeDef
  */
 void RTC_ClearITFlag(RTC_EVENTTypeDef f);
 
 /**
- * @brief   低频时钟电源配置
+ * @brief   Low frequency clock power configuration
  */
 void LClk_Cfg(FunctionalState s);
 

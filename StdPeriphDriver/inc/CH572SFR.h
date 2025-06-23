@@ -3,10 +3,10 @@
 /* Email:    tech@wch.cn    */
 /* Author:   RDL14 2024.11.22   */
 /* V1.0 SpecialFunctionRegister */
-/* V1.01 Update breif and define of RAM ROM FLASH PLL  */
-/* V1.02 Update interupt define and number for keyscan and encoder  */
-/* V1.03 Update breif and define  for PWM_DATA_REG  */
-/* V1.04 Update name and breif for RTC PWM LSI */
+/* V1.01 Update brief and define of RAM ROM FLASH PLL  */
+/* V1.02 Update interrupt define and number for keyscan and encoder  */
+/* V1.03 Update brief and define for PWM_DATA_REG  */
+/* V1.04 Update name and brief for RTC PWM LSI */
 
 // multi-blocks: __BASE_TYPE__, __CH572SFR_H__, __CH572USBSFR_H__, __USB_TYPE__...
 
@@ -316,16 +316,16 @@ extern "C" {
 #define  RB_UART_TXD        0x0038                    // RW, TXD alternate pin enable
 #define  RB_UART_RXD        0x0007                    // RW, RXD alternate pin enable
 #define R16_SLP_WAKE_CFG     (*((PUINT16V)0x4000101E)) // RWA, sleep clock aux register, SAM
-#define  RB_ACAUTO_ENABLE   0x0100                    // RWA, 1=enable safe register acess auto off,1=disable safe register acess auto off  
-#define  RB_PRECLK_CNT_SEL  0x0060                    // RWA, preclk count value sel,11=2048,101024,01= 512,00=256(actual time value = cnt * Fsys)
-#define  RB_PRECLK_CNT_EN   0x0010                    // RWA, 1=need to wait until reach to wait time to release flck when wake up   
-#define  RB_OSCCLK_RDY_KEEP 0x0001                    // RWA, 1=force OSC READY when halt sleep , 0= OSC not READY when halt sleep   
+#define  RB_ACAUTO_ENABLE   0x0100                    // RWA, 1=enable safe register access auto off, 0=disable safe register access auto off  
+#define  RB_PRECLK_CNT_SEL  0x0060                    // RWA, preclk count value selection, 11=2048, 10=1024, 01=512, 00=256 (actual time value = cnt * Fsys)
+#define  RB_PRECLK_CNT_EN   0x0010                    // RWA, 1=need to wait until reaching wait time to release FLCK when waking up   
+#define  RB_OSCCLK_RDY_KEEP 0x0001                    // RWA, 1=force OSC READY when halt sleep, 0=OSC not READY when halt sleep   
 #define R8_SLP_CLK_OFF2     (*((PUINT8V)0x4000101D))  // RWA, sleep clock off control byte 2, SAM
 #define  RB_CLK_OFF_HCLK    0x10                      // RW, 1=XROM hclk off  
 #define  RB_CLK_OFF_DEBUG   0x02                      // RW, 1=2wire debug clk off  
 #define  RB_CLK_OFF_XROM    0x01                      // RW, 1=XROM 64M or 600M clk off 
 #define R8_LONG_RST_CFG     (*((PUINT8V)0x4000101C))  // RWA, long reset config, SAM
-#define  RB_LONG_TIM_SEL    0x06                      // RW, long reset time value selecet 11=32.768ms,10=25.000ms,01=20.000msm,00=15.000ms
+#define  RB_LONG_TIM_SEL    0x06                      // RW, long reset time value selection: 11=32.768ms, 10=25.000ms, 01=20.000ms, 00=15.000ms
 #define  RB_LONG_RST_EN     0x01                      // RW, long reset enable
 
 /* System: power management register */
@@ -352,7 +352,7 @@ extern "C" {
 #define  RB_BAT_LOW_IE      0x08                      // RWA, interrupt enable for battery low voltage
 #define  RB_BAT_MON_EN      0x02                      // RWA, battery voltage monitor enable under sleep mode
 #define  RB_PWR_LDO_EN      0x01                      // RWA, enable LDO
-// request NMI interrupt if both RB_BAT_LOWER_IE and RB_BAT_LOW_IE enabled
+// Request NMI interrupt if both RB_BAT_LOWER_IE and RB_BAT_LOW_IE enabled
 #define R8_BAT_DET_CFG      (*((PUINT8V)0x40001025))  // RWA, battery voltage detector configuration, SAM
 #define  RB_BAT_LOW_VTH     0x03                      // RWA, select detector/monitor threshold voltage of battery voltage low
 #define R8_BAT_STATUS       (*((PUINT8V)0x40001026))  // RO, battery status
@@ -379,7 +379,7 @@ extern "C" {
 #define  RB_RTC_TRIG_EN     0x20                      // RWA, RTC trigger mode enable
 #define  RB_RTC_TMR_EN      0x10                      // RWA, RTC timer mode enable
 #define  RB_RTC_IGNORE_B0   0x08                      // RWA, force ignore bit0 for trigger mode: 0=compare bit0, 1=ignore bit0
-#define  RB_RTC_TMR_MODE    0x07                      // RWA, RTC timer mode(unit=cycle): 000: 1; 001: 4096; 010: 12288; 011: 28672 ; 100:61440 ;101: 122880 ;110: 245760; 111: 491520
+#define  RB_RTC_TMR_MODE    0x07                      // RWA, RTC timer mode (unit=cycle): 000: 1; 001: 4096; 010: 12288; 011: 28672; 100: 61440; 101: 122880; 110: 245760; 111: 491520
 #define R32_RTC_TRIG        (*((PUINT32V)0x40001034)) // RWA, RTC trigger value, SAM
 #define R32_RTC_CNT_LSI     (*((PUINT32V)0x40001038)) // RO, RTC count based LSI
 #define R16_RTC_CNT_LSI     (*((PUINT16V)0x40001038)) // RO, RTC count based LSI
@@ -479,24 +479,24 @@ extern "C" {
 #define R32_PA_PD_DRV       (*((PUINT32V)0x400010B4)) // RW, PA pulldown for input or PA driving capability for output
 #define R8_PA_PD_DRV_0      (*((PUINT8V)0x400010B4))  // RW, PA pulldown for input or PA driving capability for output byte 0
 #define R8_PA_PD_DRV_1      (*((PUINT8V)0x400010B5))  // RW, PA pulldown for input or PA driving capability for output byte 1
-#define R32_PA_SET          (*((PUINT32V)0x400010B8)) // RW, PA set high for output ,1=set output high,0=IDLE
+#define R32_PA_SET          (*((PUINT32V)0x400010B8)) // RW, PA set high for output, 1=set output high, 0=IDLE
 /* KEYSCAN register */
 #define R16_KEY_SCAN_CTRL    (*((PUINT16V)0x40001064))// KEY SCAN control register
-#define  RB_CLR_WAKEUP_EN   0x4000                   // RW, claer wake_up siginal after chip wakeing up, 1=enable 0=disable 
+#define  RB_CLR_WAKEUP_EN   0x4000                   // RW, clear wake-up signal after chip waking up, 1=enable 0=disable 
 #define  RB_SCAN_1END_WAKE_EN    0x2000              // RW, wake up chip after 1 round of key scanning, 1=enable 0=disable 
-#define  RB_PIN_SCAN_EN     0x1F00                   // RW, select which pin could be scaned, 1=enable 0=disable
+#define  RB_PIN_SCAN_EN     0x1F00                   // RW, select which pin could be scanned, 1=enable 0=disable
 #define  RB_SCAN_CLK_DIV    0x00F0                   // RW, divider value of scanning clock
-#define  RB_SCAN_CNT_END    0x000E                   // RW, set the times of the same key_scan value 
-#define  RB_SCAN_START_EN   0x0001                   // RW, start key scan enable,1=enable 0=disable
-#define R8_KEY_SCAN_INT_EN (*((PUINT8V)0x40001066))  // KEY SCAN interupt enable register
-#define  RB_SCAN_1END_IE    0x02                     // RW, key scan 1 round end interupt enable
-#define  RB_KEY_PRESSED_IE  0x01                     // RW, detect key pressed interupt enable                  
-#define R8_KEY_SCAN_INT_FLAG (*((PUINT8V)0x40001067))// KEY SCAN interupt flag register 
-#define  RB_SCAN_1END_IF    0x02                     // RW1, key scan 1 round end flag enable
-#define  RB_KEY_PRESSED_IF  0x01                     // RW1, detect key pressed flag enable                   
-#define R32_KEY_SCAN_NUMB  (*((PUINT32V)0x40001068))// SCAN_KEY number address now register
+#define  RB_SCAN_CNT_END    0x000E                   // RW, set the number of times the same key scan value is detected
+#define  RB_SCAN_START_EN   0x0001                   // RW, start key scan enable, 1=enable, 0=disable
+#define R8_KEY_SCAN_INT_EN (*((PUINT8V)0x40001066))  // KEY SCAN interrupt enable register
+#define  RB_SCAN_1END_IE    0x02                     // RW, key scan 1 round end interrupt enable
+#define  RB_KEY_PRESSED_IE  0x01                     // RW, detect key pressed interrupt enable
+#define R8_KEY_SCAN_INT_FLAG (*((PUINT8V)0x40001067))// KEY SCAN interrupt flag register
+#define  RB_SCAN_1END_IF    0x02                     // RW1, key scan 1 round end flag
+#define  RB_KEY_PRESSED_IF  0x01                     // RW1, detect key pressed flag
+#define R32_KEY_SCAN_NUMB  (*((PUINT32V)0x40001068))// SCAN_KEY number address register
 #define  RB_KEY_SCAN_CNT    0x700000                 // current SCAN_KEY times
-#define  RB_KEY_SCAN_NUMB   0x0FFFFF                 // SCAN_KEY number address now 
+#define  RB_KEY_SCAN_NUMB   0x0FFFFF                 // SCAN_KEY number address
 
 /* GPIO register address offset and bit define */
 #define BA_PA               ((PUINT8V)0x400010A0)     // point GPIO PA base address
@@ -618,17 +618,17 @@ extern "C" {
 /* ENCODER register */
 #define R32_ENC_REG_CTRL    (*((PUINT32V)0x40002420))
 #define R8_ENC_REG_CTRL        (*((PUINT8V)0x40002420))  // RW, ENCODER control register
-// #define  RB_WAKEUP_CLR_EN   0x10                      // RW, clear wake_up siginal after chip wake up enable   
-#define  RB_ENC_DIR         0x20                      // RO, encoder director,0=forward,1=backward  
-#define  RB_RD_CLR_EN       0x08                      // RW, clear encoder count value after R32_ENC_REG_CCNT be read
-#define  RB_SMS_MODE        0x06                      // RW, SMS mode value,10=T1EDGE,01=T2EDGE,11=T12EDGE
+// #define  RB_WAKEUP_CLR_EN   0x10                      // RW, clear wake_up signal after chip wake up enable   
+#define  RB_ENC_DIR         0x20                      // RO, encoder direction, 0=forward, 1=backward  
+#define  RB_RD_CLR_EN       0x08                      // RW, clear encoder count value after R32_ENC_REG_CCNT is read
+#define  RB_SMS_MODE        0x06                      // RW, SMS mode value, 10=T1EDGE, 01=T2EDGE, 11=T12EDGE
 #define  RB_START_ENC_EN    0x01                      // RW, start encode enable   
-#define R8_ENC_INTER_EN        (*((PUINT8V)0x40002421))  // RW, ENCODER interupt enable register
-#define  RB_IE_DIR_DEC      0x02                      // RW, encode decrease interupt enable
-#define  RB_IE_DIR_INC      0x01                      // RW, encode increase interupt enable 
-#define R8_ENC_INT_FLAG        (*((PUINT8V)0x40002422))  // RW, ENCODER interupt flag register
-#define  RB_IF_DIR_DEC      0x02                      // RWA, encode decrease interupt flag
-#define  RB_IF_DIR_INC      0x01                      // RWA, encode increase interupt flag 
+#define R8_ENC_INTER_EN        (*((PUINT8V)0x40002421))  // RW, ENCODER interrupt enable register
+#define  RB_IE_DIR_DEC      0x02                      // RW, encode decrease interrupt enable
+#define  RB_IE_DIR_INC      0x01                      // RW, encode increase interrupt enable 
+#define R8_ENC_INT_FLAG        (*((PUINT8V)0x40002422))  // RW, ENCODER interrupt flag register
+#define  RB_IF_DIR_DEC      0x02                      // RWA, encode decrease interrupt flag
+#define  RB_IF_DIR_INC      0x01                      // RWA, encode increase interrupt flag 
 #define R32_ENC_REG_CEND    (*((PUINT32V)0x40002424))
 #define R32_ENC_REG_CCNT    (*((PUINT32V)0x40002428))
 
@@ -731,7 +731,7 @@ extern "C" {
 #define UART_ADR            0x0F
 
 /* UART interrupt identification values for IIR bits 3:0 */
-#define UART_II_RECV_TOUT   0x0C                      // RO, UART interrupt by receiver fifo timeout
+#define UART_II_RECV_TOUT   0x0C                      // RO, UART interrupt by receiver FIFO timeout
 #define UART_II_LINE_STAT   0x06                      // RO, UART interrupt by receiver line status
 #define UART_II_RECV_RDY    0x04                      // RO, UART interrupt by receiver data available
 #define UART_II_THR_EMPTY   0x02                      // RO, UART interrupt by THR empty
@@ -776,7 +776,7 @@ extern "C" {
 #define  RB_SPI_BIT_ORDER   0x20                      // RW, SPI bit data order: 0=MSB first, 1=LSB first
 #define  RB_SPI_AUTO_IF     0x10                      // RW, enable buffer/FIFO accessing to auto clear RB_SPI_IF_BYTE_END interrupt flag
 #define  RB_SPI_DMA_LOOP    0x04                      // RW, SPI DMA address loop enable
-#define  RB_MST_CLK_SEL     0x02                      // RW, hclk polarity reversal,1= polarity reversal,0=IDLE 
+#define  RB_MST_CLK_SEL     0x02                      // RW, HCLK polarity reversal, 1=polarity reversal, 0=IDLE 
 #define  RB_SPI_DMA_ENABLE  0x01                      // RW, SPI DMA enable
 #define SPI_INTER_EN        2
 #define  RB_SPI_IE_FST_BYTE 0x80                      // RW, enable interrupt for SPI slave mode first byte received
@@ -819,7 +819,7 @@ extern "C" {
 #define R16_I2C_OADDR1      (*((PUINT16V)0x40004808)) // RW, I2C own address register 1
 #define R16_I2C_OADDR2      (*((PUINT16V)0x4000480C)) // RW, I2C own address register 2
 #define R16_I2C_DATAR       (*((PUINT16V)0x40004810)) // RW, I2C data register
-#define R16_I2C_STAR1       (*((PUINT16V)0x40004814)) // R0, I2C stauts register 1
+#define R16_I2C_STAR1       (*((PUINT16V)0x40004814)) // R0, I2C status register 1
 #define R16_I2C_STAR2       (*((PUINT16V)0x40004818)) // R0, I2C status register 2
 // #define R8_I2C_PEC          (*((PUINT8V) 0x40004819)) // R0, I2C Packet error checking register 
 #define R16_I2C_CKCFGR      (*((PUINT16V)0x4000481C)) // RW, I2C clock control register
@@ -837,7 +837,7 @@ extern "C" {
 #define  RB_I2C_START       0x0100                    // RW, Start generation: master mode: 0=no start, 1=repeated start; slave mode: 0=no start, 1=start at bus free
 #define  RB_I2C_NOSTRETCH   0x0080                    // RW, Clock stretching disable (Slave mode)
 #define  RB_I2C_ENGC        0x0040                    // RW, General call enable
-#define  RB_I2C_ENPEC       0x0020                    // RW, PEC ebable
+#define  RB_I2C_ENPEC       0x0020                    // RW, PEC enable
 #define  RB_I2C_EBARP       0x0010                    // RW, ARP enable
 #define  RB_I2C_SMBTYPE     0x0008                    // RW, SMBus type: 0=Device, 1=Host
 #define  RB_I2C_SMBUS       0x0002                    // RW, SMBUS mode: 0=I2C mode, 1=SMBUS mode
@@ -846,7 +846,7 @@ extern "C" {
 #define  RB_I2C_ITBUFEN     0x0400                    // RW, Buffer interrupt enable
 #define  RB_I2C_ITEVTEN     0x0200                    // RW, Event interrupt enable
 #define  RB_I2C_ITERREN     0x0100                    // RW, Error interrupt enable
-#define  RB_I2C_FREQ        0x003F                    // RW, Peripheral clock frequency, The minimum allowed frequency is 2 MHz,the maximum frequency is 36 MHz
+#define  RB_I2C_FREQ        0x003F                    // RW, Peripheral clock frequency, the minimum allowed frequency is 2 MHz, the maximum frequency is 36 MHz
 #define I2C_OADDR1          8
 #define  RB_I2C_ADDMODE     0x8000                    // RW, Addressing mode (slave mode): 0=7-bit slave address, 1=10-bit slave address
 #define  RB_I2C_ADD9_8      0x0300                    // RW, bit[9:8] of address in 10-bit addressing mode
@@ -879,7 +879,7 @@ extern "C" {
 #define  RB_I2C_GENCALL     0x0010                    // RO, General call address (Slave mode) received flag
 #define  RB_I2C_TRA         0x0004                    // RO, Trans flag: 0=data bytes received, 1=data bytes transmitted
 #define  RB_I2C_BUSY        0x0002                    // RO, Bus busy flag
-#define  RB_I2C_MSL         0x0001                    // RO, Mode statu: 0=Slave mode, 1=Master mode
+#define  RB_I2C_MSL         0x0001                    // RO, Mode status: 0=Slave mode, 1=Master mode
 #define I2C_CKCFGR          28
 #define  RB_I2C_F_S         0x8000                    // RW, I2C master mode selection: 0=standard mode, 1=fast mode
 #define  RB_I2C_DUTY        0x4000                    // RW, Fm mode duty cycle: 0=L/H=2, 1=L/H=16/9
@@ -887,7 +887,7 @@ extern "C" {
 #define I2C_RTR             32
 #define  RB_I2C_TRISE       0x003F                    // RW, Maximum rise time in Fm/Sm mode (Master mode)
 
-/* PWM1/2/3/4/5/register */
+/* PWM1/2/3/4/5 register */
 #define R32_PWM_CONTROL     (*((PUINT32V)0x40005000)) // RW, PWM control
 #define R8_PWM_OUT_EN       (*((PUINT8V)0x40005000))  // RW, PWM output enable control
 #define R8_PWM_POLAR        (*((PUINT8V)0x40005001))  // RW, PWM output polarity control
@@ -913,17 +913,17 @@ extern "C" {
 #define  RB_PWM_CYC_PRE     0x02                     // RW, select PWM cycle interrupt point: 0=after count 0xFE (0x7E for 7 bits mode...), 1=after count 0xF0 (0x70 for 7 bits mode...) 
 #define  RB_PWM_IE_CYC      0x01                     // RW, enable interrupt for PWM1\2\3 cycle end
 #define R8_PWM_INT_FLAG     (*((PUINT8V)0x4000500D))  // RW1, PWM interrupt flag
-#define  RB_PWM_IF_OVER     0x10                     // RW1, interrupt flag for fifo overflow 
-#define  RB_PWM_IF_DMA      0x08                     // RW1, interrupt flag for DMA transmision end
-#define  RB_PWM_IF_FIFO     0x04                     // RW1, interrupt flag for fifo count < 4 
+#define  RB_PWM_IF_OVER     0x10                     // RW1, interrupt flag for FIFO overflow 
+#define  RB_PWM_IF_DMA      0x08                     // RW1, interrupt flag for DMA transmission end
+#define  RB_PWM_IF_FIFO     0x04                     // RW1, interrupt flag for FIFO count < 4 
 #define  RB_PWM1_IF_CYC     0x02                     // RW1, interrupt flag for PWM4\5 cycle end 
 #define  RB_PWM_IF_CYC      0x01                     // RW1, interrupt flag for PWM1\2\3 cycle end
 #define R16_PWM_CYC_VALUE  (*((PUINT16V)0x40005014)) // RW, PWM1\2\3 cycle value for 16bit
 #define R16_PWM_CYC1_VALUE   (*((PUINT16V)0x40005016)) // RW, PWM4\5 cycle value for 16bit
 #define R16_PWM_CLOCK_DIV   (*((PUINT16V)0x40005018)) // RW, PWM clock division
-#define R32_PWM_DMA_NOW     (*((PUINT32V)0x4000501C)) // RW, PWM DMA addr for now
-#define R32_PWM_DMA_BEG     (*((PUINT32V)0x40005020)) // RW, PWM DMA addr of begining
-#define R32_PWM_DMA_END     (*((PUINT32V)0x40005024)) // RW, PWM DMA addr of end
+#define R32_PWM_DMA_NOW     (*((PUINT32V)0x4000501C)) // RW, PWM DMA current address
+#define R32_PWM_DMA_BEG     (*((PUINT32V)0x40005020)) // RW, PWM DMA beginning address
+#define R32_PWM_DMA_END     (*((PUINT32V)0x40005024)) // RW, PWM DMA end address
 
 /* PWM1/2/3/4/5 register address offset and bit define */
 #define BA_PWMX             ((PUINT8V)0x40005000)     // point PWM1/2/3/4/5 base address
@@ -947,9 +947,9 @@ extern "C" {
 #define  RB_PWM_CYC_MOD     0x06                      // RW, PWM data width mode: 00=8 bits data, 01=7 bits data, 10=6 bits data, 11=16 bits data
 #define  RB_PWM_CYCLE_SEL   0x01                      // RW, PWM cycle selection: 0=256/128/64/32 clocks, 1=255/127/63/31 clocks
 #define PWM_DMA_CTRL        3
-#define  RB_DMA_SEL         0x04                      // RW, RB_PWM_SYN_EN=0: 1=DMA choose 1/2/3 channel output , 0=DMA choose 4/5 channel output ,RB_PWM_SYN_EN=1:  1=DMA choose 1/2/3/4/5 channel output
-#define  RB_DMA_ADDR_LOOP   0x02                      // RW, DMA mode:1=DMA loop,0=DMA no loop  
-#define  RB_DMA_ENABLE      0x01                      // RW, DMA enable(only 16bit data)  
+#define  RB_DMA_SEL         0x04                      // RW, RB_PWM_SYN_EN=0: 1=DMA choose 1/2/3 channel output, 0=DMA choose 4/5 channel output; RB_PWM_SYN_EN=1: 1=DMA choose 1/2/3/4/5 channel output
+#define  RB_DMA_ADDR_LOOP   0x02                      // RW, DMA mode: 1=DMA loop, 0=DMA no loop  
+#define  RB_DMA_ENABLE      0x01                      // RW, DMA enable (only 16bit data)  
 
 #define PWM1_DATA_HOLD      4
 #define PWM2_DATA_HOLD      5
@@ -958,11 +958,11 @@ extern "C" {
 #define PWM5_DATA_HOLD      8
 
 /* Address space define */
-#define BA_CODE             ((PUINT32)0x00000000)     // point code base address
+#define BA_CODE             ((PUINT32)0x00000000)     // code base address
 #define SZ_CODE             0x00080000                // code size
-#define BA_SFR              ((PUINT32)0x40000000)     // point SFR base address
+#define BA_SFR              ((PUINT32)0x40000000)     // SFR base address
 #define SZ_SFR              0x00010000                // SFR size
-#define BA_RAM              ((PUINT32)0x20000000)     // point RAM base address
+#define BA_RAM              ((PUINT32)0x20000000)     // RAM base address
 #define SZ_RAM              0x00003000                // RAM size
 
 /* Special Program Space */
