@@ -1,6 +1,6 @@
 # CH572 Standard Library - English Translation
 
-This repository contains translated versions of the CH572 Standard Peripheral Drivers and library files with Chinese comments converted to English for better readability and maintainability.
+This repository contains translated versions of the CH572 Standard Peripheral Drivers and library files with the Chinese comments converted to English for English-speaking developers.
 
 ## Purpose
 
