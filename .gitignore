@@ -1,0 +1,34 @@
+# Build artifacts
+*.o
+*.obj
+*.bin
+*.hex
+*.elf
+*.map
+*.lst
+*.d
+*.eep
+*.lss
+*.sym
+*.srec
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+*.swp
+*~
+.DS_Store
+
+# Project specific
+obj/
+Lst/
+*.bak
+*.log
+
+# Ignore library build files
+*.a
+*.lib
+
+# Don't ignore the library files we need
+!libISP572.a
