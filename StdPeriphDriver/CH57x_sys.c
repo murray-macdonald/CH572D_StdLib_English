@@ -15,9 +15,9 @@
 /*********************************************************************
  * @fn      SetSysClock
  *
- * @brief   配置系统运行时钟
+ * @brief   Configure system clock
  *
- * @param   sc      - 系统时钟源选择 refer to SYS_CLKTypeDef
+ * @param   sc      - System clock source selection, refer to SYS_CLKTypeDef
  *
  * @return  none
  */
@@ -90,7 +90,7 @@ void SetSysClock(SYS_CLKTypeDef sc)
 /*********************************************************************
  * @fn      GetSysClock
  *
- * @brief   获取当前系统时钟
+ * @brief   Get current system clock
  *
  * @param   none
  *
@@ -99,7 +99,7 @@ void SetSysClock(SYS_CLKTypeDef sc)
 uint32_t GetSysClock(void)
 {
     if((R8_CLK_SYS_CFG & RB_CLK_SYS_MOD) == RB_CLK_SYS_MOD)
-    { // 32K做主频
+    { // 32K as main frequency
         return (Freq_LSI);
     }
     else if((R8_CLK_SYS_CFG & RB_CLK_SYS_MOD) == 0x40)
@@ -107,7 +107,7 @@ uint32_t GetSysClock(void)
         return (600000000 / ((R8_CLK_SYS_CFG & 0x1f)?(R8_CLK_SYS_CFG & 0x1f):32));
     }
     else
-    { // 32M进行分频
+    { // 32M frequency division
         return (32000000 / ((R8_CLK_SYS_CFG & 0x1f)?(R8_CLK_SYS_CFG & 0x1f):32));
     }
 }
@@ -115,11 +115,11 @@ uint32_t GetSysClock(void)
 /*********************************************************************
  * @fn      SYS_GetInfoSta
  *
- * @brief   获取当前系统信息状态
+ * @brief   Get current system information status
  *
  * @param   i       - refer to SYS_InfoStaTypeDef
  *
- * @return  是否开启
+ * @return  Status (enabled/disabled)
  */
 uint8_t SYS_GetInfoSta(SYS_InfoStaTypeDef i)
 {
@@ -136,7 +136,7 @@ uint8_t SYS_GetInfoSta(SYS_InfoStaTypeDef i)
 /*********************************************************************
  * @fn      SYS_ResetExecute
  *
- * @brief   执行系统软件复位
+ * @brief   Execute system software reset
  *
  * @param   none
  *
@@ -154,9 +154,9 @@ void SYS_ResetExecute(void)
 /*********************************************************************
  * @fn      SYS_DisableAllIrq
  *
- * @brief   关闭所有中断，并保留当前中断值
+ * @brief   Disable all interrupts and preserve current interrupt value
  *
- * @param   pirqv   - 当前保留中断值
+ * @param   pirqv   - Pointer to store current interrupt value
  *
  * @return  none
  */
@@ -171,9 +171,9 @@ void SYS_DisableAllIrq(uint32_t *pirqv)
 /*********************************************************************
  * @fn      SYS_RecoverIrq
  *
- * @brief   恢复之前关闭的中断值
+ * @brief   Restore previously disabled interrupt value
  *
- * @param   irq_status  - 当前保留中断值
+ * @param   irq_status  - Previously stored interrupt value
  *
  * @return  none
  */
@@ -186,11 +186,11 @@ void SYS_RecoverIrq(uint32_t irq_status)
 /*********************************************************************
  * @fn      SYS_GetSysTickCnt
  *
- * @brief   获取当前系统(SYSTICK)计数值
+ * @brief   Get current system (SYSTICK) counter value
  *
  * @param   none
  *
- * @return  当前计数值
+ * @return  Current counter value
  */
 uint32_t SYS_GetSysTickCnt(void)
 {
@@ -200,9 +200,9 @@ uint32_t SYS_GetSysTickCnt(void)
 /*********************************************************************
  * @fn      WWDG_ITCfg
  *
- * @brief   看门狗定时器溢出中断使能
+ * @brief   Watchdog timer overflow interrupt enable
  *
- * @param   s       - 溢出是否中断
+ * @param   s       - Enable/disable overflow interrupt
  *
  * @return  none
  */
@@ -227,9 +227,9 @@ void WWDG_ITCfg(FunctionalState s)
 /*********************************************************************
  * @fn      WWDG_ResetCfg
  *
- * @brief   看门狗定时器复位功能
+ * @brief   Watchdog timer reset function
  *
- * @param   s       - 溢出是否复位
+ * @param   s       - Enable/disable reset on overflow
  *
  * @return  none
  */
@@ -254,7 +254,7 @@ void WWDG_ResetCfg(FunctionalState s)
 /*********************************************************************
  * @fn      WWDG_ClearFlag
  *
- * @brief   清除看门狗中断标志，重新加载计数值也可清除
+ * @brief   Clear watchdog interrupt flag, reloading the counter value can also clear it
  *
  * @param   none
  *
@@ -270,7 +270,7 @@ void WWDG_ClearFlag(void)
 /*********************************************************************
  * @fn      HardFault_Handler
  *
- * @brief   硬件错误中断，进入后执行复位，复位类型为上电复位
+ * @brief   Hardware error interrupt, executes reset upon entry, reset type is power-on reset
  *
  * @param   none
  *
@@ -294,9 +294,9 @@ void HardFault_Handler(void)
 /*********************************************************************
  * @fn      mDelayuS
  *
- * @brief   uS 延时
+ * @brief   Microsecond delay
  *
- * @param   t       - 时间参数
+ * @param   t       - Time parameter in microseconds
  *
  * @return  none
  */
@@ -356,9 +356,9 @@ void mDelayuS(uint16_t t)
 /*********************************************************************
  * @fn      mDelaymS
  *
- * @brief   mS 延时
+ * @brief   Millisecond delay
  *
- * @param   t       - 时间参数
+ * @param   t       - Time parameter in milliseconds
  *
  * @return  none
  */
@@ -377,8 +377,8 @@ int _write(int fd, char *buf, int size)
     int i;
     for(i = 0; i < size; i++)
     {
-        while(R8_UART_TFC == UART_FIFO_SIZE);                  /* 等待数据发送 */
-            R8_UART_THR = *buf++; /* 发送数据 */
+        while(R8_UART_TFC == UART_FIFO_SIZE);                  /* Wait for data transmission */
+            R8_UART_THR = *buf++; /* Send data */
     }
     return size;
 }

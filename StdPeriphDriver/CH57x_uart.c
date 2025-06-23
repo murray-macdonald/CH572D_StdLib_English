@@ -15,7 +15,7 @@
 /*********************************************************************
  * @fn      UART_DefInit
  *
- * @brief   串口默认初始化配置
+ * @brief   UART default initialization configuration
  *
  * @param   none
  *
@@ -24,7 +24,7 @@
 void UART_DefInit(void)
 {
     UART_BaudRateCfg(115200);
-    R8_UART_FCR = (2 << 6) | RB_FCR_FIFO_EN; // FIFO打开，触发点4字节
+    R8_UART_FCR = (2 << 6) | RB_FCR_FIFO_EN; // FIFO enabled, trigger point 4 bytes
     R8_UART_LCR = RB_LCR_WORD_SZ;
     R8_UART_IER = RB_IER_TXD_EN;
     R8_UART_DIV = 1;
@@ -33,9 +33,9 @@ void UART_DefInit(void)
 /*********************************************************************
  * @fn      UART_BaudRateCfg
  *
- * @brief   串口波特率配置
+ * @brief   UART baud rate configuration
  *
- * @param   baudrate    - 波特率
+ * @param   baudrate    - Baud rate
  *
  * @return  none
  */
@@ -51,9 +51,9 @@ void UART_BaudRateCfg(uint32_t baudrate)
 /*********************************************************************
  * @fn      UART_ByteTrigCfg
  *
- * @brief   串口字节触发中断配置
+ * @brief   UART byte trigger interrupt configuration
  *
- * @param   b       - 触发字节数 refer to UARTByteTRIGTypeDef
+ * @param   b       - Trigger byte count, refer to UARTByteTRIGTypeDef
  *
  * @return  none
  */
@@ -65,14 +65,14 @@ void UART_ByteTrigCfg(UARTByteTRIGTypeDef b)
 /*********************************************************************
  * @fn      UART_INTCfg
  *
- * @brief   串口中断配置
+ * @brief   UART interrupt configuration
  *
- * @param   s       - 中断控制状态，是否使能相应中断
- * @param   i       - 中断类型
- *                    RB_IER_MODEM_CHG  - 调制解调器输入状态变化中断使能位（仅 UART 支持）
- *                    RB_IER_LINE_STAT  - 接收线路状态中断
- *                    RB_IER_THR_EMPTY  - 发送保持寄存器空中断
- *                    RB_IER_RECV_RDY   - 接收数据中断
+ * @param   s       - Interrupt control status, whether to enable the corresponding interrupt
+ * @param   i       - Interrupt type
+ *                    RB_IER_MODEM_CHG  - Modem input status change interrupt enable bit (only UART supports)
+ *                    RB_IER_LINE_STAT  - Receive line status interrupt
+ *                    RB_IER_THR_EMPTY  - Transmit holding register empty interrupt
+ *                    RB_IER_RECV_RDY   - Receive data interrupt
  *
  * @return  none
  */
@@ -92,10 +92,10 @@ void UART_INTCfg(FunctionalState s, uint8_t i)
 /*********************************************************************
  * @fn      UART_SendString
  *
- * @brief   串口多字节发送
+ * @brief   UART multi-byte transmission
  *
- * @param   buf     - 待发送的数据内容首地址
- * @param   l       - 待发送的数据长度
+ * @param   buf     - Pointer to the data to be transmitted
+ * @param   l       - Length of data to be transmitted
  *
  * @return  none
  */
@@ -116,11 +116,11 @@ void UART_SendString(uint8_t *buf, uint16_t l)
 /*********************************************************************
  * @fn      UART_RecvString
  *
- * @brief   串口读取多字节
+ * @brief   UART multi-byte reception
  *
- * @param   buf     - 读取数据存放缓存区首地址
+ * @param   buf     - Pointer to the buffer for storing received data
  *
- * @return  读取数据长度
+ * @return  Length of received data
  */
 uint16_t UART_RecvString(uint8_t *buf)
 {
@@ -138,10 +138,10 @@ uint16_t UART_RecvString(uint8_t *buf)
 /*********************************************************************
  * @fn      UART_Remap
  *
- * @brief   串口映射
+ * @brief   UART pin remapping
  *
- * @param   s       - 是否使能映射
- * @param   perph   - 写Tx与Rx的映射关系
+ * @param   s       - Whether to enable remapping
+ * @param   perph   - Mapping relationship for Tx and Rx pins
  *
  *
  * @return  none
@@ -150,7 +150,7 @@ void UART_Remap(FunctionalState s, UARTTxPinRemapDef u_tx, UARTRxPinRemapDef u_r
 {
     if(s)
     {
-        R16_PIN_ALTERNATE_H &= ~(RB_UART_TXD | RB_UART_RXD); // 该寄存器仅在上电复位和ShutDown睡眠时清0
+        R16_PIN_ALTERNATE_H &= ~(RB_UART_TXD | RB_UART_RXD); // This register is only cleared to 0 during power-on reset and ShutDown sleep
         R16_PIN_ALTERNATE_H |= (u_tx << 3) | u_rx;
     }
     else
