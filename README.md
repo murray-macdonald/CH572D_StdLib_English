@@ -38,7 +38,7 @@ The CH572 microcontroller documentation and library files originally contain Chi
   - [ ] CH572SFR.h
   - [ ] CH57x_clk.h
   - [ ] CH57x_cmp.h
-  - [ ] CH57x_common.h
+  - [x] CH57x_common.h
   - [ ] CH57x_flash.h
   - [ ] CH57x_gpio.h
   - [ ] CH57x_i2c.h
