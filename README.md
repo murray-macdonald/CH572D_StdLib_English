@@ -17,41 +17,41 @@ The CH572 microcontroller documentation and library files originally contain Chi
 
 ## Translation Status
 
-- [ ] StdPeriphDriver
-  - [ ] CH57x_clk.c
-  - [ ] CH57x_cmp.c
-  - [ ] CH57x_flash.c
-  - [ ] CH57x_gpio.c
-  - [ ] CH57x_i2c.c
-  - [ ] CH57x_keyscan.c
-  - [ ] CH57x_pwm.c
-  - [ ] CH57x_pwr.c
-  - [ ] CH57x_spi.c
-  - [ ] CH57x_sys.c
-  - [ ] CH57x_timer.c
-  - [ ] CH57x_uart.c
-  - [ ] CH57x_usbdev.c
-  - [ ] CH57x_usbhostBase.c
-  - [ ] CH57x_usbhostClass.c
+- [x ] StdPeriphDriver
+  - [x] CH57x_clk.c
+  - [x] CH57x_cmp.c
+  - [x] CH57x_flash.c
+  - [x] CH57x_gpio.c
+  - [x] CH57x_i2c.c
+  - [x] CH57x_keyscan.c
+  - [x] CH57x_pwm.c
+  - [x] CH57x_pwr.c
+  - [x] CH57x_spi.c
+  - [x] CH57x_sys.c
+  - [x] CH57x_timer.c
+  - [x] CH57x_uart.c
+  - [x] CH57x_usbdev.c
+  - [x] CH57x_usbhostBase.c
+  - [x] CH57x_usbhostClass.c
 
-- [ ] StdPeriphDriver Headers
-  - [ ] CH572SFR.h
-  - [ ] CH57x_clk.h
-  - [ ] CH57x_cmp.h
+- [x] StdPeriphDriver Headers
+  - [x] CH572SFR.h
+  - [x] CH57x_clk.h
+  - [x] CH57x_cmp.h
   - [x] CH57x_common.h
-  - [ ] CH57x_flash.h
-  - [ ] CH57x_gpio.h
-  - [ ] CH57x_i2c.h
-  - [ ] CH57x_keyscan.h
-  - [ ] CH57x_pwm.h
-  - [ ] CH57x_pwr.h
-  - [ ] CH57x_spi.h
-  - [ ] CH57x_sys.h
-  - [ ] CH57x_timer.h
-  - [ ] CH57x_uart.h
-  - [ ] CH57x_usbdev.h
-  - [ ] CH57x_usbhost.h
-  - [ ] ISP572.h
+  - [x] CH57x_flash.h
+  - [x] CH57x_gpio.h
+  - [x] CH57x_i2c.h
+  - [x] CH57x_keyscan.h
+  - [x] CH57x_pwm.h
+  - [x] CH57x_pwr.h
+  - [x] CH57x_spi.h
+  - [x] CH57x_sys.h
+  - [x] CH57x_timer.h
+  - [x] CH57x_uart.h
+  - [x] CH57x_usbdev.h
+  - [x] CH57x_usbhost.h
+  - [x] ISP572.h
 
 ## Usage
 
@@ -61,7 +61,11 @@ Once files are translated, they can be:
 
 ## Original Source
 
-These files are based on the original CH572 library code provided by WCH (Nanjing Qinheng Microelectronics Co., Ltd.).
+These files are based on the original CH572 library code provided by WCH (Nanjing Qinheng Microelectronics Co., Ltd.).  
+
+## Testing
+
+These files are untested since automatic translation via Windsurf/Claude 3.7 Sonnet
 
 ## Copyright Notice
 
