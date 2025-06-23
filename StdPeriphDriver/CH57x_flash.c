@@ -53,12 +53,12 @@ void FLASH_ROM_READ(uint32_t StartAddr, void *Buffer, uint32_t len)
 /*********************************************************************
  * @fn      UserOptionByteConfig
  *
- * @brief   Configure User Option Byte.需在调用用户配置字生效函数后生效,且每次烧录后只能修改一次
- *          (使用该函数，必须使用官方提供的.S文件，同时调用该函数后，两次上电后，两线调试接口默认关闭)
+ * @brief   Configure User Option Byte. Takes effect after calling the user configuration activation function, and can only be modified once after each programming
+ *          (When using this function, you must use the .S files provided by the official source, and after calling this function, the two-wire debug interface will be closed by default after powering on twice)
  *
- * @param   RESET_EN        - 外部复位引脚使能
- * @param   UART_NO_KEY_EN  - 串口免按键下载使能
- * @param   FLASHProt_Size  - 写保护大小(单位4K)
+ * @param   RESET_EN        - External reset pin enable
+ * @param   UART_NO_KEY_EN  - UART download without key press enable
+ * @param   FLASHProt_Size  - Write protection size (unit: 4K)
  *
  * @return  0-Success, 1-Err
  */
@@ -81,7 +81,7 @@ uint8_t UserOptionByteConfig(FunctionalState RESET_EN, FunctionalState UART_NO_K
             s &= RESET_Disable;
 
         /* bit[7:0]-bit[31-24] */
-        s |= ((~(s << 24)) & 0xFF000000); //高8位 配置信息取反；
+        s |= ((~(s << 24)) & 0xFF000000); // High 8 bits: complement of configuration information
 
         if(UART_NO_KEY_EN == ENABLE)
             s |= UART_NO_KEY_Enable;
@@ -108,7 +108,7 @@ uint8_t UserOptionByteConfig(FunctionalState RESET_EN, FunctionalState UART_NO_K
 /*********************************************************************
  * @fn      UserOptionByteClose_SWD
  *
- * @brief   关两线调试接口
+ * @brief   Close two-wire debug interface
  *
  * @return  0-Success, 1-Err
  */
@@ -122,7 +122,7 @@ uint8_t UserOptionByteClose_SWD(void)
 /*********************************************************************
  * @fn      UserOptionByte_Active
  *
- * @brief   用户配置字生效函数，执行后自动复位
+ * @brief   User configuration activation function, automatically resets after execution
  *
  * @return  0-Success, 1-Err
  */

@@ -68,22 +68,22 @@ void  KeyPress_Wake(uint8_t s);
 #define   KeyScan_Cnt   (R32_KEY_SCAN_NUMB >> 20)
 
 /**
- * @brief   KeyScan中断配置
+ * @brief   KeyScan interrupt configuration
  *
- * @param   s       - 使能/关闭
+ * @param   s       - Enable/Disable
  * @param   f       - refer to ENC interrupt bit define
  */
 #define KeyScan_ITCfg(s, f)       ((s) ? (R8_KEY_SCAN_INT_EN |= f) : (R8_KEY_SCAN_INT_EN &= ~f))
 
 /**
- * @brief   清除ENC中断标志
+ * @brief   Clear ENC interrupt flag
  *
  * @param   f       - refer to ENC interrupt bit define
  */
 #define KeyScan_ClearITFlag(f)    (R8_KEY_SCAN_INT_FLAG = f)
 
 /**
- * @brief   查询中断标志状态
+ * @brief   Query interrupt flag status
  *
  * @param   f       - refer to ENC interrupt bit define
  */

@@ -15,9 +15,9 @@
 /*********************************************************************
  * @fn      PWR_PeriphClkCfg
  *
- * @brief   外设时钟控制位
+ * @brief   Peripheral clock control bit
  *
- * @param   s       - 是否打开对应外设时钟
+ * @param   s       - Whether to enable the corresponding peripheral clock
  * @param   perph   - please refer to Peripher CLK control bit define
  *
  * @return  none
@@ -43,16 +43,16 @@ void PWR_PeriphClkCfg(FunctionalState s, uint16_t perph)
 /*********************************************************************
  * @fn      PWR_PeriphWakeUpCfg
  *
- * @brief   睡眠唤醒源配置
+ * @brief   Sleep wake-up source configuration
  *
- * @param   s       - 是否打开此外设睡眠唤醒功能
- * @param   perph   - 需要设置的唤醒源
- *                    RB_SLP_USB_WAKE   -  USBFS 为唤醒源
- *                    RB_SLP_USB2_WAKE  -  USBHS 为唤醒源
- *                    RB_SLP_RTC_WAKE   -  RTC 为唤醒源
- *                    RB_SLP_GPIO_WAKE  -  GPIO 为唤醒源
- *                    RB_SLP_BAT_WAKE   -  BAT 为唤醒源
- *                    RB_SLP_GPIO_EDGE_MODE -  GPIO不论上沿还是下沿都能唤醒
+ * @param   s       - Whether to enable the wake-up function for this peripheral
+ * @param   perph   - Wake-up source to be configured
+ *                    RB_SLP_USB_WAKE   -  USBFS as wake-up source
+ *                    RB_SLP_USB2_WAKE  -  USBHS as wake-up source
+ *                    RB_SLP_RTC_WAKE   -  RTC as wake-up source
+ *                    RB_SLP_GPIO_WAKE  -  GPIO as wake-up source
+ *                    RB_SLP_BAT_WAKE   -  BAT as wake-up source
+ *                    RB_SLP_GPIO_EDGE_MODE -  GPIO can wake up on both rising and falling edges
  * @param   mode    - refer to WakeUP_ModeypeDef
  *
  * @return  none
@@ -82,9 +82,9 @@ void PWR_PeriphWakeUpCfg(FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mod
 /*********************************************************************
  * @fn      PowerMonitor
  *
- * @brief   电源监控
+ * @brief   Power monitoring
  *
- * @param   s       - 是否打开此功能
+ * @param   s       - Whether to enable this function
  * @param   vl      - refer to VolM_LevelypeDef
  *
  * @return  none
@@ -119,7 +119,7 @@ void PowerMonitor(FunctionalState s, VolM_LevelypeDef vl)
 /*********************************************************************
  * @fn      LowPower_Idle
  *
- * @brief   低功耗-Idle模式
+ * @brief   Low power - Idle mode
  *
  * @param   none
  *
@@ -129,7 +129,7 @@ __HIGH_CODE
 void LowPower_Idle(void)
 {
     FLASH_ROM_SW_RESET();
-    R8_FLASH_CTRL = 0x04; //flash关闭
+    R8_FLASH_CTRL = 0x04; //flash closed
 
     PFIC->SCTLR &= ~(1 << 2); // sleep
     __WFI();
@@ -140,7 +140,7 @@ void LowPower_Idle(void)
 /*********************************************************************
  * @fn      LowPower_Halt
  *
- * @brief   低功耗-Halt模式，此低功耗切到HSI/5时钟运行，唤醒后需要用户自己重新选择系统时钟源
+ * @brief   Low power - Halt mode, this low power mode switches to HSI/5 clock, after waking up, the user needs to reselect the system clock source
  *
  * @param   none
  *
@@ -152,15 +152,15 @@ void LowPower_Halt(void)
     uint8_t x32Mpw;
 
     FLASH_ROM_SW_RESET();
-    R8_FLASH_CTRL = 0x04; //flash关闭
+    R8_FLASH_CTRL = 0x04; //flash closed
     x32Mpw = R8_XT32M_TUNE;
     if(!(R8_HFCK_PWR_CTRL&RB_CLK_XT32M_KEEP))
     {
-        x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
+        x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150% rated current
     }
 
     sys_safe_access_enable();
-    R8_BAT_DET_CTRL = 0; // 关闭电压监控
+    R8_BAT_DET_CTRL = 0; // Turn off voltage monitoring
     sys_safe_access_disable();
     sys_safe_access_enable();
     R8_XT32M_TUNE = x32Mpw;
@@ -180,12 +180,12 @@ void LowPower_Halt(void)
 
 /*******************************************************************************
 * Function Name  : LowPower_Sleep
-* Description    : 低功耗-Sleep模式。
+* Description    : Low power - Sleep mode.
 * Input          : rm:
-                    RB_PWR_RAM12K	-	12K retention SRAM 供电
-                    RB_PWR_EXTEND	-	USB 和 BLE 单元保留区域供电
-                    RB_PWR_XROM   - FlashROM 供电
-                   NULL	-	以上单元都断电
+                    RB_PWR_RAM12K	-	Power supply to 12K retention SRAM
+                    RB_PWR_EXTEND	-	Power supply to USB and BLE unit reserved areas
+                    RB_PWR_XROM   - Power supply to FlashROM
+                   NULL	-	All of the above units power off
 * Return         : None
 *******************************************************************************/
 __HIGH_CODE
@@ -199,10 +199,10 @@ void LowPower_Sleep(uint16_t rm)
     clk_sys_cfg = R8_CLK_SYS_CFG;
     hfck_pwr_ctrl = R8_HFCK_PWR_CTRL;
     x32Mpw = R8_XT32M_TUNE;
-    x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
+    x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150% rated current
 
     sys_safe_access_enable();
-    R8_BAT_DET_CTRL = 0; // 关闭电压监控
+    R8_BAT_DET_CTRL = 0; // Turn off voltage monitoring
     sys_safe_access_disable();
     sys_safe_access_enable();
     R8_XT32M_TUNE = x32Mpw;
@@ -214,7 +214,7 @@ void LowPower_Sleep(uint16_t rm)
 
     sys_safe_access_enable();
 
-    // 需要测试周期数 目前用的3584
+    // Number of test cycles needed, currently using 3584
     R8_SLP_POWER_CTRL |= 0x40;
 
     R16_POWER_PLAN = power_plan;
@@ -253,13 +253,13 @@ void LowPower_Sleep(uint16_t rm)
 /*********************************************************************
  * @fn      LowPower_Shutdown
  *
- * @brief   低功耗-Shutdown模式，此低功耗切到HSI/5时钟运行，唤醒后需要用户自己重新选择系统时钟源
- *          @note 注意调用此函数，DCDC功能强制关闭，唤醒后可以手动再次打开
+ * @brief   Low power - Shutdown mode, this low power mode switches to HSI/5 clock, after waking up, the user needs to reselect the system clock source
+ *          @note When calling this function, DCDC function is forcibly turned off, and can be manually turned on again after wake-up
  *
- * @param   rm      - 供电模块选择
- *                    RB_PWR_RAM12K   -   12K retention SRAM 供电
- *                    RB_PWR_EXTEND   -   USB 和 BLE 单元保留区域供电
- *                    NULL          -   以上单元都断电
+ * @param   rm      - Power module selection
+ *                    RB_PWR_RAM12K   -   Power supply to 12K retention SRAM
+ *                    RB_PWR_EXTEND   -   Power supply to USB and BLE unit reserved areas
+ *                    NULL          -   All of the above units power off
  *
  * @return  none
  */
@@ -270,10 +270,10 @@ void LowPower_Shutdown(uint16_t rm)
 
     FLASH_ROM_SW_RESET();
     x32Mpw = R8_XT32M_TUNE;
-    x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
+    x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150% rated current
 
     sys_safe_access_enable();
-    R8_BAT_DET_CTRL = 0; // 关闭电压监控
+    R8_BAT_DET_CTRL = 0; // Turn off voltage monitoring
     sys_safe_access_disable();
     sys_safe_access_enable();
     R8_XT32M_TUNE = x32Mpw;
