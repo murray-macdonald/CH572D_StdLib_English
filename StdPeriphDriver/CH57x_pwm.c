@@ -15,7 +15,7 @@
 /*********************************************************************
  * @fn      PWMX_CycleCfg
  *
- * @brief   PWM 8位周期配置
+ * @brief   PWM 8-bit cycle configuration
  *
  * @param   cyc     - refer to PWMX_CycleTypeDef
  *
@@ -57,9 +57,9 @@ void PWMX_CycleCfg(PWMX_CycleTypeDef cyc)
 /*********************************************************************
  * @fn      PWMX_16bit_CycleCfg
  *
- * @brief   PWM 16位周期配置
+ * @brief   PWM 16-bit cycle configuration
  *
- * @param   cyc     - 16位周期
+ * @param   cyc     - 16-bit cycle
  *
  * @return  none
  */
@@ -78,7 +78,7 @@ void PWMX_16bit_CycleCfg(uint8_t ch, uint16_t cyc)
 /*********************************************************************
  * @fn      PWMX_16bit_ACTOUT
  *
- * @brief   PWM 16位输出波形配置
+ * @brief   PWM 16-bit output waveform configuration
  *
  * @param   ch      - select channel of pwm, refer to channel of PWM define
  * @param   da      - effective pulse width
@@ -119,7 +119,7 @@ void PWMX_16bit_ACTOUT(uint8_t ch, uint16_t da, PWMX_PolarTypeDef pr, Functional
 /*********************************************************************
  * @fn      PWMX_ACTOUT
  *
- * @brief   PWM 8位输出波形配置
+ * @brief   PWM 8-bit output waveform configuration
  *
  * @param   ch      - select channel of pwm, refer to channel of PWM define
  * @param   da      - effective pulse width
@@ -166,10 +166,10 @@ void PWMX_ACTOUT(uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, FunctionalState s
 /*********************************************************************
  * @fn      PWMX_AlterOutCfg
  *
- * @brief   PWM 交替输出模式配置
+ * @brief   PWM alternate output mode configuration
  *
  * @param   ch      - select group of PWM alternate output
- *                    RB_PWM4_5_STAG_EN     -  PWM4 和 PWM5 通道交替输出
+ *                    RB_PWM4_5_STAG_EN     -  Alternate output of PWM4 and PWM5 channels
  * @param   s       - control pwmx function, ENABLE or DISABLE
  *
  * @return  none
@@ -189,7 +189,7 @@ void PWMX_AlterOutCfg(uint8_t ch, FunctionalState s)
 /*********************************************************************
  * @fn      PWMX_SyncOutCfg
  *
- * @brief   PWM 同步输出模式配置
+ * @brief   PWM synchronous output mode configuration
  *
  * @param   s       - control pwmx function, ENABLE or DISABLE
  *
@@ -211,13 +211,13 @@ void PWMX_SyncOutCfg(FunctionalState s)
 /*********************************************************************
  * @fn      PWM_DMACfg
  *
- * @brief   配置PWM DMA功能
+ * @brief   Configure PWM DMA function
  *
- * @param   s           - 是否打开DMA功能
- * @param   startAddr   - DMA 起始地址
- * @param   endAddr     - DMA 结束地址
- * @param   m           - 配置DMA模式
- * @param   ch          - 配置DMA输出通道
+ * @param   s           - Enable or disable DMA function
+ * @param   startAddr   - DMA start address
+ * @param   endAddr     - DMA end address
+ * @param   m           - Configure DMA mode
+ * @param   ch          - Configure DMA output channel
  *
  * @return  none
  */

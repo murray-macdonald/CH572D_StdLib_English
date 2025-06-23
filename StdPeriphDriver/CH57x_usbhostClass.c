@@ -15,25 +15,25 @@
   #include "CHRV3UFI.H"
 #endif
 
-/* 设置HID上传速率 */
+/* Set HID upload rate */
 __attribute__((aligned(4))) const uint8_t SetupSetHIDIdle[] = {0x21, HID_SET_IDLE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-/* 获取HID设备报表描述符 */
+/* Get HID device report descriptor */
 __attribute__((aligned(4))) const uint8_t SetupGetHIDDevReport[] = {0x81, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_REPORT,
                                                                     0x00, 0x00, 0x41, 0x00};
-/* 获取HUB描述符 */
+/* Get HUB descriptor */
 __attribute__((aligned(4))) const uint8_t SetupGetHubDescr[] = {HUB_GET_HUB_DESCRIPTOR, HUB_GET_DESCRIPTOR, 0x00,
                                                                 USB_DESCR_TYP_HUB, 0x00, 0x00, sizeof(USB_HUB_DESCR), 0x00};
 
-__attribute__((aligned(4))) uint8_t Com_Buffer[128]; // 定义用户临时缓冲区,枚举时用于处理描述符,枚举结束也可以用作普通临时缓冲区
+__attribute__((aligned(4))) uint8_t Com_Buffer[128]; // Define user temporary buffer, used for processing descriptors during enumeration, also can be used as a general temporary buffer after enumeration
 
 /*********************************************************************
  * @fn      AnalyzeHidIntEndp
  *
- * @brief   从描述符中分析出HID中断端点的地址,如果HubPortIndex是0保存到ROOTHUB，如果是非零值则保存到HUB下结构体
+ * @brief   Analyze the HID interrupt endpoint address from the descriptor, if HubPortIndex is 0 save to ROOTHUB, if non-zero save to structure under HUB
  *
- * @param   buf     - 待分析数据缓冲区地址 HubPortIndex：0表示根HUB，非0表示外部HUB下的端口号
+ * @param   buf     - Buffer address of data to be analyzed; HubPortIndex: 0 indicates root HUB, non-0 indicates port number under external HUB
  *
- * @return  端点数
+ * @return  Number of endpoints
  */
 uint8_t AnalyzeHidIntEndp(uint8_t *buf, uint8_t HubPortIndex)
 {
@@ -42,35 +42,35 @@ uint8_t AnalyzeHidIntEndp(uint8_t *buf, uint8_t HubPortIndex)
 
     if(HubPortIndex)
     {
-        memset(DevOnHubPort[HubPortIndex - 1].GpVar, 0, sizeof(DevOnHubPort[HubPortIndex - 1].GpVar)); //清空数组
+        memset(DevOnHubPort[HubPortIndex - 1].GpVar, 0, sizeof(DevOnHubPort[HubPortIndex - 1].GpVar)); //Clear array
     }
     else
     {
-        memset(ThisUsbDev.GpVar, 0, sizeof(ThisUsbDev.GpVar)); //清空数组
+        memset(ThisUsbDev.GpVar, 0, sizeof(ThisUsbDev.GpVar)); //Clear array
     }
 
-    for(i = 0; i < ((PUSB_CFG_DESCR)buf)->wTotalLength; i += l) // 搜索中断端点描述符,跳过配置描述符和接口描述符
+    for(i = 0; i < ((PUSB_CFG_DESCR)buf)->wTotalLength; i += l) // Search for interrupt endpoint descriptors, skip configuration and interface descriptors
     {
-        if(((PUSB_ENDP_DESCR)(buf + i))->bDescriptorType == USB_DESCR_TYP_ENDP                         // 是端点描述符
-           && (((PUSB_ENDP_DESCR)(buf + i))->bmAttributes & USB_ENDP_TYPE_MASK) == USB_ENDP_TYPE_INTER // 是中断端点
-           && (((PUSB_ENDP_DESCR)(buf + i))->bEndpointAddress & USB_ENDP_DIR_MASK))                    // 是IN端点
-        {                                                                                              // 保存中断端点的地址,位7用于同步标志位,清0
+        if(((PUSB_ENDP_DESCR)(buf + i))->bDescriptorType == USB_DESCR_TYP_ENDP                         // Is endpoint descriptor
+           && (((PUSB_ENDP_DESCR)(buf + i))->bmAttributes & USB_ENDP_TYPE_MASK) == USB_ENDP_TYPE_INTER // Is interrupt endpoint
+           && (((PUSB_ENDP_DESCR)(buf + i))->bEndpointAddress & USB_ENDP_DIR_MASK))                    // Is IN endpoint
+        {                                                                                              // Save interrupt endpoint address, bit 7 used for sync flag, clear 0
             if(HubPortIndex)
             {
                 DevOnHubPort[HubPortIndex - 1].GpVar[s] = ((PUSB_ENDP_DESCR)(buf + i))->bEndpointAddress & USB_ENDP_ADDR_MASK;
             }
             else
             {
-                ThisUsbDev.GpVar[s] = ((PUSB_ENDP_DESCR)(buf + i))->bEndpointAddress & USB_ENDP_ADDR_MASK; // 中断端点的地址，可以根据需要保存wMaxPacketSize和bInterval
+                ThisUsbDev.GpVar[s] = ((PUSB_ENDP_DESCR)(buf + i))->bEndpointAddress & USB_ENDP_ADDR_MASK; // Interrupt endpoint address, can also save wMaxPacketSize and bInterval as needed
             }
             PRINT("%02x ", (uint16_t)ThisUsbDev.GpVar[s]);
             s++;
             if(s >= 4)
             {
-                break; //只分析4个端点
+                break; //Only analyze up to 4 endpoints
             }
         }
-        l = ((PUSB_ENDP_DESCR)(buf + i))->bLength; // 当前描述符长度,跳过
+        l = ((PUSB_ENDP_DESCR)(buf + i))->bLength; // Current descriptor length, skip it
         if(l > 16)
         {
             break;
@@ -83,9 +83,9 @@ uint8_t AnalyzeHidIntEndp(uint8_t *buf, uint8_t HubPortIndex)
 /*********************************************************************
  * @fn      AnalyzeBulkEndp
  *
- * @brief   分析出批量端点,GpVar[0]、GpVar[1]存放上传端点。GpVar[2]、GpVar[3]存放下传端点
+ * @brief   Analyze bulk endpoints, GpVar[0] and GpVar[1] store upload endpoints. GpVar[2] and GpVar[3] store download endpoints
  *
- * @param   buf     - 待分析数据缓冲区地址 HubPortIndex：0表示根HUB，非0表示外部HUB下的端口号
+ * @param   buf     - Buffer address of data to be analyzed; HubPortIndex: 0 indicates root HUB, non-0 indicates port number under external HUB
  *
  * @return  0
  */
@@ -97,17 +97,17 @@ uint8_t AnalyzeBulkEndp(uint8_t *buf, uint8_t HubPortIndex)
 
     if(HubPortIndex)
     {
-        memset(DevOnHubPort[HubPortIndex - 1].GpVar, 0, sizeof(DevOnHubPort[HubPortIndex - 1].GpVar)); //清空数组
+        memset(DevOnHubPort[HubPortIndex - 1].GpVar, 0, sizeof(DevOnHubPort[HubPortIndex - 1].GpVar)); //Clear array
     }
     else
     {
-        memset(ThisUsbDev.GpVar, 0, sizeof(ThisUsbDev.GpVar)); //清空数组
+        memset(ThisUsbDev.GpVar, 0, sizeof(ThisUsbDev.GpVar)); //Clear array
     }
 
-    for(i = 0; i < ((PUSB_CFG_DESCR)buf)->wTotalLength; i += l) // 搜索中断端点描述符,跳过配置描述符和接口描述符
+    for(i = 0; i < ((PUSB_CFG_DESCR)buf)->wTotalLength; i += l) // Search for interrupt endpoint descriptors, skip configuration and interface descriptors
     {
-        if((((PUSB_ENDP_DESCR)(buf + i))->bDescriptorType == USB_DESCR_TYP_ENDP)                         // 是端点描述符
-           && ((((PUSB_ENDP_DESCR)(buf + i))->bmAttributes & USB_ENDP_TYPE_MASK) == USB_ENDP_TYPE_BULK)) // 是中断端点
+        if((((PUSB_ENDP_DESCR)(buf + i))->bDescriptorType == USB_DESCR_TYP_ENDP)                         // Is endpoint descriptor
+           && ((((PUSB_ENDP_DESCR)(buf + i))->bmAttributes & USB_ENDP_TYPE_MASK) == USB_ENDP_TYPE_BULK)) // Is bulk endpoint
 
         {
             if(HubPortIndex)
@@ -142,7 +142,7 @@ uint8_t AnalyzeBulkEndp(uint8_t *buf, uint8_t HubPortIndex)
                 s2 = 3;
             }
         }
-        l = ((PUSB_ENDP_DESCR)(buf + i))->bLength; // 当前描述符长度,跳过
+        l = ((PUSB_ENDP_DESCR)(buf + i))->bLength; // Current descriptor length, skip it
         if(l > 16)
         {
             break;
@@ -154,11 +154,11 @@ uint8_t AnalyzeBulkEndp(uint8_t *buf, uint8_t HubPortIndex)
 /*********************************************************************
  * @fn      InitRootDevice
  *
- * @brief   初始化指定ROOT-HUB端口的USB设备
+ * @brief   Initialize USB device on specified ROOT-HUB port
  *
  * @param   none
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t InitRootDevice(void)
 {
@@ -166,30 +166,30 @@ uint8_t InitRootDevice(void)
     uint8_t cfg, dv_cls, if_cls;
 
     PRINT("Reset host port\n");
-    ResetRootHubPort(); // 检测到设备后,复位相应端口的USB总线
+    ResetRootHubPort(); // After detecting the device, reset the USB bus of the corresponding port
     for(i = 0, s = 0; i < 100; i++)
-    { // 等待USB设备复位后重新连接,100mS超时
+    { // Wait for the USB device to reconnect after reset, 100mS timeout
         mDelaymS(1);
         if(EnableRootHubPort() == ERR_SUCCESS)
-        { // 使能端口
+        { // Enable port
             i = 0;
             s++;
             if(s > 100)
             {
-                break; // 已经稳定连接100mS
+                break; // Already stable connection for 100mS
             }
         }
     }
     if(i)
-    { // 复位后设备没有连接
+    { // Device not connected after reset
         DisableRootHubPort();
         PRINT("Disable host port because of disconnect\n");
         return (ERR_USB_DISCON);
     }
-    SetUsbSpeed(ThisUsbDev.DeviceSpeed); // 设置当前USB速度
+    SetUsbSpeed(ThisUsbDev.DeviceSpeed); // Set current USB speed
 
     PRINT("GetDevDescr: ");
-    s = CtrlGetDeviceDescr(); // 获取设备描述符
+    s = CtrlGetDeviceDescr(); // Get device descriptor
     if(s == ERR_SUCCESS)
     {
         for(i = 0; i < ((PUSB_SETUP_REQ)SetupGetDevDescr)->wLength; i++)
@@ -198,14 +198,14 @@ uint8_t InitRootDevice(void)
         }
         PRINT("\n");
 
-        ThisUsbDev.DeviceVID = ((PUSB_DEV_DESCR)Com_Buffer)->idVendor; //保存VID PID信息
+        ThisUsbDev.DeviceVID = ((PUSB_DEV_DESCR)Com_Buffer)->idVendor; //Save VID PID information
         ThisUsbDev.DevicePID = ((PUSB_DEV_DESCR)Com_Buffer)->idProduct;
         dv_cls = ((PUSB_DEV_DESCR)Com_Buffer)->bDeviceClass;
 
         s = CtrlSetUsbAddress(((PUSB_SETUP_REQ)SetupSetUsbAddr)->wValue);
         if(s == ERR_SUCCESS)
         {
-            ThisUsbDev.DeviceAddress = ((PUSB_SETUP_REQ)SetupSetUsbAddr)->wValue; // 保存USB地址
+            ThisUsbDev.DeviceAddress = ((PUSB_SETUP_REQ)SetupSetUsbAddr)->wValue; // Save USB address
 
             PRINT("GetCfgDescr: ");
             s = CtrlGetConfigDescr();
@@ -216,12 +216,12 @@ uint8_t InitRootDevice(void)
                     PRINT("x%02X ", (uint16_t)(Com_Buffer[i]));
                 }
                 PRINT("\n");
-                /* 分析配置描述符,获取端点数据/各端点地址/各端点大小等,更新变量endp_addr和endp_size等 */
+                /* Analyze configuration descriptor, get endpoint data/addresses/sizes, update variables like endp_addr and endp_size */
                 cfg = ((PUSB_CFG_DESCR)Com_Buffer)->bConfigurationValue;
-                if_cls = ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceClass; // 接口类代码
+                if_cls = ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceClass; // Interface class code
 
                 if((dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_STORAGE))
-                { // 是USB存储类设备,基本上确认是U盘
+                { // This is a USB storage class device, basically confirmed as a USB drive
 #ifdef FOR_ROOT_UDISK_ONLY
                     CHRV3DiskStatus = DISK_USB_ADDR;
                     return (ERR_SUCCESS);
@@ -231,40 +231,40 @@ uint8_t InitRootDevice(void)
                     return (ERR_USB_UNSUPPORT);
                 }
 #else
-                    s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+                    s = CtrlSetUsbConfig(cfg); // Set USB device configuration
                     if(s == ERR_SUCCESS)
                     {
                         ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                         ThisUsbDev.DeviceType = USB_DEV_CLASS_STORAGE;
                         PRINT("USB-Disk Ready\n");
-                        SetUsbSpeed(1); // 默认为全速
+                        SetUsbSpeed(1); // Default to full speed
                         return (ERR_SUCCESS);
                     }
                 }
                 else if((dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_PRINTER) && ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass == 0x01)
-                {                              // 是打印机类设备
-                    s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+                {                              // This is a printer class device
+                    s = CtrlSetUsbConfig(cfg); // Set USB device configuration
                     if(s == ERR_SUCCESS)
                     {
-                        //	需保存端点信息以便主程序进行USB传输
+                        //	Need to save endpoint information for the main program to perform USB transfers
                         ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                         ThisUsbDev.DeviceType = USB_DEV_CLASS_PRINTER;
                         PRINT("USB-Print Ready\n");
-                        SetUsbSpeed(1); // 默认为全速
+                        SetUsbSpeed(1); // Default to full speed
                         return (ERR_SUCCESS);
                     }
                 }
                 else if((dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_HID) && ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass <= 0x01)
-                { // 是HID类设备,键盘/鼠标等
-                    //  从描述符中分析出HID中断端点的地址
-                    s = AnalyzeHidIntEndp(Com_Buffer, 0); // 从描述符中分析出HID中断端点的地址
+                { // This is a HID class device, keyboard/mouse etc.
+                    //  Analyze HID interrupt endpoint address from the descriptor
+                    s = AnalyzeHidIntEndp(Com_Buffer, 0); // Analyze HID interrupt endpoint address from the descriptor
                     PRINT("AnalyzeHidIntEndp %02x\n", (uint16_t)s);
-                    //  保存中断端点的地址,位7用于同步标志位,清0
+                    //  Save interrupt endpoint address, bit 7 used for sync flag, clear 0
                     if_cls = ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceProtocol;
-                    s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+                    s = CtrlSetUsbConfig(cfg); // Set USB device configuration
                     if(s == ERR_SUCCESS)
                     {
-                        s = CtrlGetHIDDeviceReport(dv_cls); //获取报表描述符
+                        s = CtrlGetHIDDeviceReport(dv_cls); //Get report descriptor
                         if(s == ERR_SUCCESS)
                         {
                             for(i = 0; i < 64; i++)
@@ -273,70 +273,70 @@ uint8_t InitRootDevice(void)
                             }
                             PRINT("\n");
                         }
-                        //	需保存端点信息以便主程序进行USB传输
+                        //	Need to save endpoint information for the main program to perform USB transfers
                         ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                         if(if_cls == 1)
                         {
                             ThisUsbDev.DeviceType = DEV_TYPE_KEYBOARD;
-                            //	进一步初始化,例如设备键盘指示灯LED等
+                            //	Further initialization, such as setting keyboard indicator LEDs etc.
                             PRINT("USB-Keyboard Ready\n");
-                            SetUsbSpeed(1); // 默认为全速
+                            SetUsbSpeed(1); // Default to full speed
                             return (ERR_SUCCESS);
                         }
                         else if(if_cls == 2)
                         {
                             ThisUsbDev.DeviceType = DEV_TYPE_MOUSE;
-                            //	为了以后查询鼠标状态,应该分析描述符,取得中断端口的地址,长度等信息
+                            //	To query mouse status later, descriptor should be analyzed to get interrupt port address, length and other information
                             PRINT("USB-Mouse Ready\n");
-                            SetUsbSpeed(1); // 默认为全速
+                            SetUsbSpeed(1); // Default to full speed
                             return (ERR_SUCCESS);
                         }
                         s = ERR_USB_UNSUPPORT;
                     }
                 }
                 else if(dv_cls == USB_DEV_CLASS_HUB)
-                { // 是HUB类设备,集线器等
+                { // This is a HUB class device, hub etc.
                     s = CtrlGetHubDescr();
                     if(s == ERR_SUCCESS)
                     {
                         PRINT("Max Port:%02X ", (((PXUSB_HUB_DESCR)Com_Buffer)->bNbrPorts));
-                        ThisUsbDev.GpHUBPortNum = ((PXUSB_HUB_DESCR)Com_Buffer)->bNbrPorts; // 保存HUB的端口数量
+                        ThisUsbDev.GpHUBPortNum = ((PXUSB_HUB_DESCR)Com_Buffer)->bNbrPorts; // Save HUB port count
                         if(ThisUsbDev.GpHUBPortNum > HUB_MAX_PORTS)
                         {
-                            ThisUsbDev.GpHUBPortNum = HUB_MAX_PORTS; // 因为定义结构DevOnHubPort时人为假定每个HUB不超过HUB_MAX_PORTS个端口
+                            ThisUsbDev.GpHUBPortNum = HUB_MAX_PORTS; // Because when defining DevOnHubPort structure, it's assumed each HUB has no more than HUB_MAX_PORTS ports
                         }
-                        s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+                        s = CtrlSetUsbConfig(cfg); // Set USB device configuration
                         if(s == ERR_SUCCESS)
                         {
                             ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                             ThisUsbDev.DeviceType = USB_DEV_CLASS_HUB;
-                            //需保存端点信息以便主程序进行USB传输,本来中断端点可用于HUB事件通知,但本程序使用查询状态控制传输代替
-                            //给HUB各端口上电,查询各端口状态,初始化有设备连接的HUB端口,初始化设备
-                            for(i = 1; i <= ThisUsbDev.GpHUBPortNum; i++) // 给HUB各端口都上电
+                            // Need to save endpoint information for the main program to perform USB transfers; originally interrupt endpoints can be used for HUB event notifications, but this program uses status query control transfers instead
+                            // Power on all HUB ports, query port status, initialize HUB ports with connected devices, and initialize devices
+                            for(i = 1; i <= ThisUsbDev.GpHUBPortNum; i++) // Power on all HUB ports
                             {
-                                DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_DISCONNECT; // 清外部HUB端口上设备的状态
+                                DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_DISCONNECT; // Clear device status on external HUB port
                                 s = HubSetPortFeature(i, HUB_PORT_POWER);
                                 if(s != ERR_SUCCESS)
                                 {
-                                    PRINT("Ext-HUB Port_%1d# power on error\n", (uint16_t)i); // 端口上电失败
+                                    PRINT("Ext-HUB Port_%1d# power on error\n", (uint16_t)i); // Port power-on failed
                                 }
                             }
                             PRINT("USB-HUB Ready\n");
-                            SetUsbSpeed(1); // 默认为全速
+                            SetUsbSpeed(1); // Default to full speed
                             return (ERR_SUCCESS);
                         }
                     }
                 }
                 else
-                {                              // 可以进一步分析
-                    s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+                {                              // Can be further analyzed
+                    s = CtrlSetUsbConfig(cfg); // Set USB device configuration
                     if(s == ERR_SUCCESS)
                     {
-                        //	需保存端点信息以便主程序进行USB传输
+                        //	Need to save endpoint information for the main program to perform USB transfers
                         ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                         ThisUsbDev.DeviceType = DEV_TYPE_UNKNOW;
-                        SetUsbSpeed(1);       // 默认为全速
-                        return (ERR_SUCCESS); /* 未知设备初始化成功 */
+                        SetUsbSpeed(1);       // Default to full speed
+                        return (ERR_SUCCESS); /* Unknown device initialization successful */
                     }
                 }
 #endif
@@ -350,18 +350,18 @@ uint8_t InitRootDevice(void)
 #else
     ThisUsbDev.DeviceStatus = ROOT_DEV_FAILED;
 #endif
-    SetUsbSpeed(1); // 默认为全速
+    SetUsbSpeed(1); // Default to full speed
     return (s);
 }
 
 /*********************************************************************
  * @fn      InitDevOnHub
  *
- * @brief   初始化枚举外部HUB后的二级USB设备
+ * @brief   Initialize secondary USB devices after enumerating external HUB
  *
- * @param   HubPortIndex    - 指定外部HUB
+ * @param   HubPortIndex    - Specify external HUB
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t InitDevOnHub(uint8_t HubPortIndex)
 {
@@ -372,26 +372,26 @@ uint8_t InitDevOnHub(uint8_t HubPortIndex)
     {
         return (ERR_USB_UNKNOWN);
     }
-    SelectHubPort(HubPortIndex); // 选择操作指定的ROOT-HUB端口的外部HUB的指定端口,选择速度
+    SelectHubPort(HubPortIndex); // Select the specified port of the external HUB on the specified ROOT-HUB port, and select speed
     PRINT("GetDevDescr: ");
-    s = CtrlGetDeviceDescr(); // 获取设备描述符
+    s = CtrlGetDeviceDescr(); // Get device descriptor
     if(s != ERR_SUCCESS)
     {
         return (s);
     }
-    DevOnHubPort[HubPortIndex - 1].DeviceVID = ((uint16_t)((PUSB_DEV_DESCR)Com_Buffer)->idVendor); //保存VID PID信息
+    DevOnHubPort[HubPortIndex - 1].DeviceVID = ((uint16_t)((PUSB_DEV_DESCR)Com_Buffer)->idVendor); //Save VID PID information
     DevOnHubPort[HubPortIndex - 1].DevicePID = ((uint16_t)((PUSB_DEV_DESCR)Com_Buffer)->idProduct);
 
-    dv_cls = ((PUSB_DEV_DESCR)Com_Buffer)->bDeviceClass; // 设备类代码
-    cfg = (1 << 4) + HubPortIndex;                       // 计算出一个USB地址,避免地址重叠
-    s = CtrlSetUsbAddress(cfg);                          // 设置USB设备地址
+    dv_cls = ((PUSB_DEV_DESCR)Com_Buffer)->bDeviceClass; // Device class code
+    cfg = (1 << 4) + HubPortIndex;                       // Calculate a USB address, avoid address overlap
+    s = CtrlSetUsbAddress(cfg);                          // Set USB device address
     if(s != ERR_SUCCESS)
     {
         return (s);
     }
-    DevOnHubPort[HubPortIndex - 1].DeviceAddress = cfg; // 保存分配的USB地址
+    DevOnHubPort[HubPortIndex - 1].DeviceAddress = cfg; // Save allocated USB address
     PRINT("GetCfgDescr: ");
-    s = CtrlGetConfigDescr(); // 获取配置描述符
+    s = CtrlGetConfigDescr(); // Get configuration descriptor
     if(s != ERR_SUCCESS)
     {
         return (s);
@@ -402,9 +402,9 @@ uint8_t InitDevOnHub(uint8_t HubPortIndex)
         PRINT("x%02X ", (uint16_t)(Com_Buffer[i]));
     }
     PRINT("\n");
-    /* 分析配置描述符,获取端点数据/各端点地址/各端点大小等,更新变量endp_addr和endp_size等 */
-    if_cls = ((PXUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceClass; // 接口类代码
-    if(dv_cls == 0x00 && if_cls == USB_DEV_CLASS_STORAGE)                   // 是USB存储类设备,基本上确认是U盘
+    /* Analyze configuration descriptor, get endpoint data/addresses/sizes, update variables like endp_addr and endp_size */
+    if_cls = ((PXUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceClass; // Interface class code
+    if(dv_cls == 0x00 && if_cls == USB_DEV_CLASS_STORAGE)                   // This is a USB storage class device, basically confirmed as a USB drive
     {
         AnalyzeBulkEndp(Com_Buffer, HubPortIndex);
         for(i = 0; i != 4; i++)
@@ -412,28 +412,28 @@ uint8_t InitDevOnHub(uint8_t HubPortIndex)
             PRINT("%02x ", (uint16_t)DevOnHubPort[HubPortIndex - 1].GpVar[i]);
         }
         PRINT("\n");
-        s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+        s = CtrlSetUsbConfig(cfg); // Set USB device configuration
         if(s == ERR_SUCCESS)
         {
             DevOnHubPort[HubPortIndex - 1].DeviceStatus = ROOT_DEV_SUCCESS;
             DevOnHubPort[HubPortIndex - 1].DeviceType = USB_DEV_CLASS_STORAGE;
             PRINT("USB-Disk Ready\n");
-            SetUsbSpeed(1); // 默认为全速
+            SetUsbSpeed(1); // Default to full speed
             return (ERR_SUCCESS);
         }
     }
-    else if((dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_HID) && (((PXUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass <= 0x01)) // 是HID类设备,键盘/鼠标等
+    else if((dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_HID) && (((PXUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass <= 0x01)) // This is a HID class device, keyboard/mouse etc.
     {
         ifc = ((PXUSB_CFG_DESCR_LONG)Com_Buffer)->cfg_descr.bNumInterfaces;
-        s = AnalyzeHidIntEndp(Com_Buffer, HubPortIndex); // 从描述符中分析出HID中断端点的地址
+        s = AnalyzeHidIntEndp(Com_Buffer, HubPortIndex); // Analyze HID interrupt endpoint address from the descriptor
         PRINT("AnalyzeHidIntEndp %02x\n", (uint16_t)s);
         if_cls = ((PXUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceProtocol;
-        s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+        s = CtrlSetUsbConfig(cfg); // Set USB device configuration
         if(s == ERR_SUCCESS)
         {
             for(dv_cls = 0; dv_cls < ifc; dv_cls++)
             {
-                s = CtrlGetHIDDeviceReport(dv_cls); //获取报表描述符
+                s = CtrlGetHIDDeviceReport(dv_cls); //Get report descriptor
                 if(s == ERR_SUCCESS)
                 {
                     for(i = 0; i < 64; i++)
@@ -443,105 +443,105 @@ uint8_t InitDevOnHub(uint8_t HubPortIndex)
                     PRINT("\n");
                 }
             }
-            //需保存端点信息以便主程序进行USB传输
+            // Need to save endpoint information for the main program to perform USB transfers
             DevOnHubPort[HubPortIndex - 1].DeviceStatus = ROOT_DEV_SUCCESS;
             if(if_cls == 1)
             {
                 DevOnHubPort[HubPortIndex - 1].DeviceType = DEV_TYPE_KEYBOARD;
-                //进一步初始化,例如设备键盘指示灯LED等
+                //Further initialization, such as setting keyboard indicator LEDs etc.
                 if(ifc > 1)
                 {
                     PRINT("USB_DEV_CLASS_HID Ready\n");
-                    DevOnHubPort[HubPortIndex - 1].DeviceType = USB_DEV_CLASS_HID; //复合HID设备
+                    DevOnHubPort[HubPortIndex - 1].DeviceType = USB_DEV_CLASS_HID; //Composite HID device
                 }
                 PRINT("USB-Keyboard Ready\n");
-                SetUsbSpeed(1); // 默认为全速
+                SetUsbSpeed(1); // Default to full speed
 
                 return (ERR_SUCCESS);
             }
             else if(if_cls == 2)
             {
                 DevOnHubPort[HubPortIndex - 1].DeviceType = DEV_TYPE_MOUSE;
-                //为了以后查询鼠标状态,应该分析描述符,取得中断端口的地址,长度等信息
+                //For future mouse status queries, should analyze descriptor to get interrupt port address, length and other information
                 if(ifc > 1)
                 {
                     PRINT("USB_DEV_CLASS_HID Ready\n");
-                    DevOnHubPort[HubPortIndex - 1].DeviceType = USB_DEV_CLASS_HID; //复合HID设备
+                    DevOnHubPort[HubPortIndex - 1].DeviceType = USB_DEV_CLASS_HID; //Composite HID device
                 }
                 PRINT("USB-Mouse Ready\n");
-                SetUsbSpeed(1); // 默认为全速
+                SetUsbSpeed(1); // Default to full speed
 
                 return (ERR_SUCCESS);
             }
             s = ERR_USB_UNSUPPORT;
         }
     }
-    else if(dv_cls == USB_DEV_CLASS_HUB) // 是HUB类设备,集线器等
+    else if(dv_cls == USB_DEV_CLASS_HUB) // This is a HUB class device, hub, etc.
     {
         DevOnHubPort[HubPortIndex - 1].DeviceType = USB_DEV_CLASS_HUB;
-        PRINT("This program don't support Level 2 HUB\n"); // 需要支持多级HUB级联请参考本程序进行扩展
-        s = HubClearPortFeature(i, HUB_PORT_ENABLE);       // 禁止HUB端口
+        PRINT("This program don't support Level 2 HUB\n"); // To support multi-level HUB cascading, please refer to this program for extension
+        s = HubClearPortFeature(i, HUB_PORT_ENABLE);       // Disable HUB port
         if(s != ERR_SUCCESS)
         {
             return (s);
         }
         s = ERR_USB_UNSUPPORT;
     }
-    else //其他设备
+    else //Other devices
     {
-        AnalyzeBulkEndp(Com_Buffer, HubPortIndex); //分析出批量端点
+        AnalyzeBulkEndp(Com_Buffer, HubPortIndex); //Analyze bulk endpoints
         for(i = 0; i != 4; i++)
         {
             PRINT("%02x ", (uint16_t)DevOnHubPort[HubPortIndex - 1].GpVar[i]);
         }
         PRINT("\n");
-        s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
+        s = CtrlSetUsbConfig(cfg); // Set USB device configuration
         if(s == ERR_SUCCESS)
         {
-            //需保存端点信息以便主程序进行USB传输
+            // Need to save endpoint information for the main program to perform USB transfers
             DevOnHubPort[HubPortIndex - 1].DeviceStatus = ROOT_DEV_SUCCESS;
             DevOnHubPort[HubPortIndex - 1].DeviceType = dv_cls ? dv_cls : if_cls;
-            SetUsbSpeed(1);       // 默认为全速
-            return (ERR_SUCCESS); //未知设备初始化成功
+            SetUsbSpeed(1);       // Default to full speed
+            return (ERR_SUCCESS); //Unknown device initialization successful
         }
     }
     PRINT("InitDevOnHub Err = %02X\n", (uint16_t)s);
     DevOnHubPort[HubPortIndex - 1].DeviceStatus = ROOT_DEV_FAILED;
-    SetUsbSpeed(1); // 默认为全速
+    SetUsbSpeed(1); // Default to full speed
     return (s);
 }
 
 /*********************************************************************
  * @fn      EnumHubPort
  *
- * @brief   枚举指定ROOT-HUB端口上的外部HUB集线器的各个端口,检查各端口有无连接或移除事件并初始化二级USB设备
+ * @brief   Enumerate each port of the external HUB on the specified ROOT-HUB port, check for connection or removal events on each port, and initialize secondary USB devices
  *
- * @param   RootHubIndex    - ROOT_HUB0和ROOT_HUB1
+ * @param   RootHubIndex    - ROOT_HUB0 and ROOT_HUB1
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t EnumHubPort()
 {
     uint8_t i, s;
 
-    for(i = 1; i <= ThisUsbDev.GpHUBPortNum; i++) // 查询集线器的端口是否有变化
+    for(i = 1; i <= ThisUsbDev.GpHUBPortNum; i++) // Query if there are changes on the hub ports
     {
-        SelectHubPort(0);        // 选择操作指定的ROOT-HUB端口,设置当前USB速度以及被操作设备的USB地址
-        s = HubGetPortStatus(i); // 获取端口状态
+        SelectHubPort(0);        // Select the specified ROOT-HUB port, set current USB speed and the USB address of the device being operated
+        s = HubGetPortStatus(i); // Get port status
         if(s != ERR_SUCCESS)
         {
-            return (s); // 可能是该HUB断开了
+            return (s); // The HUB might have disconnected
         }
         if(((Com_Buffer[0] & (1 << (HUB_PORT_CONNECTION & 0x07))) && (Com_Buffer[2] & (1 << (HUB_C_PORT_CONNECTION & 0x07)))) || (Com_Buffer[2] == 0x10))
-        {                                                          // 发现有设备连接
-            DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_CONNECTED; // 有设备连接
+        {                                                          // Device connection discovered
+            DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_CONNECTED; // Device connected
             DevOnHubPort[i - 1].DeviceAddress = 0x00;
-            s = HubGetPortStatus(i); // 获取端口状态
+            s = HubGetPortStatus(i); // Get port status
             if(s != ERR_SUCCESS)
             {
-                return (s); // 可能是该HUB断开了
+                return (s); // The HUB might have disconnected
             }
-            DevOnHubPort[i - 1].DeviceSpeed = Com_Buffer[1] & (1 << (HUB_PORT_LOW_SPEED & 0x07)) ? 0 : 1; // 低速还是全速
+            DevOnHubPort[i - 1].DeviceSpeed = Com_Buffer[1] & (1 << (HUB_PORT_LOW_SPEED & 0x07)) ? 0 : 1; // Low speed or full speed
             if(DevOnHubPort[i - 1].DeviceSpeed)
             {
                 PRINT("Found full speed device on port %1d\n", (uint16_t)i);
@@ -550,97 +550,97 @@ uint8_t EnumHubPort()
             {
                 PRINT("Found low speed device on port %1d\n", (uint16_t)i);
             }
-            mDelaymS(200);                            // 等待设备上电稳定
-            s = HubSetPortFeature(i, HUB_PORT_RESET); // 对有设备连接的端口复位
+            mDelaymS(200);                            // Wait for device power to stabilize
+            s = HubSetPortFeature(i, HUB_PORT_RESET); // Reset the port with connected device
             if(s != ERR_SUCCESS)
             {
-                return (s); // 可能是该HUB断开了
+                return (s); // The HUB might have disconnected
             }
             PRINT("Reset port and then wait in\n");
-            do // 查询复位端口,直到复位完成,把完成后的状态显示出来
+            do // Query the reset port until reset completes, and display the status after completion
             {
                 mDelaymS(1);
                 s = HubGetPortStatus(i);
                 if(s != ERR_SUCCESS)
                 {
-                    return (s); // 可能是该HUB断开了
+                    return (s); // The HUB might have disconnected
                 }
-            } while(Com_Buffer[0] & (1 << (HUB_PORT_RESET & 0x07))); // 端口正在复位则等待
+            } while(Com_Buffer[0] & (1 << (HUB_PORT_RESET & 0x07))); // Wait while the port is being reset
             mDelaymS(100);
-            s = HubClearPortFeature(i, HUB_C_PORT_RESET);      // 清除复位完成标志
-                                                               //             s = HubSetPortFeature( i, HUB_PORT_ENABLE );                              // 启用HUB端口
-            s = HubClearPortFeature(i, HUB_C_PORT_CONNECTION); // 清除连接或移除变化标志
+            s = HubClearPortFeature(i, HUB_C_PORT_RESET);      // Clear reset completion flag
+                                                               //             s = HubSetPortFeature( i, HUB_PORT_ENABLE );                              // Enable HUB port
+            s = HubClearPortFeature(i, HUB_C_PORT_CONNECTION); // Clear connection or removal change flag
             if(s != ERR_SUCCESS)
             {
                 return (s);
             }
-            s = HubGetPortStatus(i); // 再读取状态,复查设备是否还在
+            s = HubGetPortStatus(i); // Read status again, recheck if the device is still present
             if(s != ERR_SUCCESS)
             {
                 return (s);
             }
             if((Com_Buffer[0] & (1 << (HUB_PORT_CONNECTION & 0x07))) == 0)
             {
-                DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_DISCONNECT; // 设备不在了
+                DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_DISCONNECT; // Device is no longer present
             }
-            s = InitDevOnHub(i); // 初始化二级USB设备
+            s = InitDevOnHub(i); // Initialize secondary USB device
             if(s != ERR_SUCCESS)
             {
                 return (s);
             }
-            SetUsbSpeed(1); // 默认为全速
+            SetUsbSpeed(1); // Default to full speed
         }
-        else if(Com_Buffer[2] & (1 << (HUB_C_PORT_ENABLE & 0x07))) // 设备连接出错
+        else if(Com_Buffer[2] & (1 << (HUB_C_PORT_ENABLE & 0x07))) // Device connection error
         {
-            HubClearPortFeature(i, HUB_C_PORT_ENABLE); // 清除连接错误标志
+            HubClearPortFeature(i, HUB_C_PORT_ENABLE); // Clear connection error flag
             PRINT("Device on port error\n");
-            s = HubSetPortFeature(i, HUB_PORT_RESET); // 对有设备连接的端口复位
+            s = HubSetPortFeature(i, HUB_PORT_RESET); // Reset the port with connected device
             if(s != ERR_SUCCESS)
-                return (s); // 可能是该HUB断开了
-            do              // 查询复位端口,直到复位完成,把完成后的状态显示出来
+                return (s); // The HUB might have disconnected
+            do              // Query the reset port until reset completes, and display the status after completion
             {
                 mDelaymS(1);
                 s = HubGetPortStatus(i);
                 if(s != ERR_SUCCESS)
-                    return (s);                                      // 可能是该HUB断开了
-            } while(Com_Buffer[0] & (1 << (HUB_PORT_RESET & 0x07))); // 端口正在复位则等待
+                    return (s);                                      // The HUB might have disconnected
+            } while(Com_Buffer[0] & (1 << (HUB_PORT_RESET & 0x07))); // Wait while the port is being reset
         }
-        else if((Com_Buffer[0] & (1 << (HUB_PORT_CONNECTION & 0x07))) == 0) // 设备已经断开
+        else if((Com_Buffer[0] & (1 << (HUB_PORT_CONNECTION & 0x07))) == 0) // Device has been disconnected
         {
             if(DevOnHubPort[i - 1].DeviceStatus >= ROOT_DEV_CONNECTED)
             {
                 PRINT("Device on port %1d removed\n", (uint16_t)i);
             }
-            DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_DISCONNECT; // 有设备连接
+            DevOnHubPort[i - 1].DeviceStatus = ROOT_DEV_DISCONNECT; // Device is disconnected
             if(Com_Buffer[2] & (1 << (HUB_C_PORT_CONNECTION & 0x07)))
             {
-                HubClearPortFeature(i, HUB_C_PORT_CONNECTION); // 清除移除变化标志
+                HubClearPortFeature(i, HUB_C_PORT_CONNECTION); // Clear removal change flag
             }
         }
     }
-    return (ERR_SUCCESS); // 返回操作成功
+    return (ERR_SUCCESS); // Return operation successful
 }
 
 /*********************************************************************
  * @fn      EnumAllHubPort
  *
- * @brief   枚举所有ROOT-HUB端口下外部HUB后的二级USB设备
+ * @brief   Enumerate all secondary USB devices after external HUB on all ROOT-HUB ports
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t EnumAllHubPort(void)
 {
     uint8_t s;
 
-    if((ThisUsbDev.DeviceStatus >= ROOT_DEV_SUCCESS) && (ThisUsbDev.DeviceType == USB_DEV_CLASS_HUB)) // HUB枚举成功
+    if((ThisUsbDev.DeviceStatus >= ROOT_DEV_SUCCESS) && (ThisUsbDev.DeviceType == USB_DEV_CLASS_HUB)) // HUB enumeration successful
     {
-        SelectHubPort(0);    // 选择操作指定的ROOT-HUB端口,设置当前USB速度以及被操作设备的USB地址
-        s = EnumHubPort();   // 枚举指定ROOT-HUB端口上的外部HUB集线器的各个端口,检查各端口有无连接或移除事件
-        if(s != ERR_SUCCESS) // 可能是HUB断开了
+        SelectHubPort(0);    // Select the specified ROOT-HUB port, set current USB speed and the USB address of the device being operated
+        s = EnumHubPort();   // Enumerate each port on the external HUB on the specified ROOT-HUB port, check for connection or removal events on each port
+        if(s != ERR_SUCCESS) // The HUB might have disconnected
         {
             PRINT("EnumAllHubPort err = %02X\n", (uint16_t)s);
         }
-        SetUsbSpeed(1); // 默认为全速
+        SetUsbSpeed(1); // Default to full speed
     }
     return (ERR_SUCCESS);
 }
@@ -648,32 +648,32 @@ uint8_t EnumAllHubPort(void)
 /*********************************************************************
  * @fn      SearchTypeDevice
  *
- * @brief   在ROOT-HUB以及外部HUB各端口上搜索指定类型的设备所在的端口号,输出端口号为0xFFFF则未搜索到.
- *          当然也可以根据USB的厂商VID产品PID进行搜索(事先要记录各设备的VID和PID),以及指定搜索序号
+ * @brief   Search for the port number of a specified device type on ROOT-HUB and external HUB ports, output port number of 0xFFFF if not found.
+ *          Of course, you can also search by USB vendor VID and product PID (need to record VID and PID for each device in advance), as well as specify a search sequence number
  *
- * @param   type    - 搜索的设备类型
+ * @param   type    - Device type to search for
  *
- * @return  输出高8位为ROOT-HUB端口号,低8位为外部HUB的端口号,低8位为0则设备直接在ROOT-HUB端口上
+ * @return  Output: high 8 bits are ROOT-HUB port number, low 8 bits are external HUB port number, if low 8 bits are 0 then the device is directly on the ROOT-HUB port
  */
 uint16_t SearchTypeDevice(uint8_t type)
 {
-    uint8_t RootHubIndex; //CH554只有一个USB口,RootHubIndex = 0,只需看返回值的低八位即可
+    uint8_t RootHubIndex; //CH554 only has one USB port, RootHubIndex = 0, only need to look at the low eight bits of the return value
     uint8_t HubPortIndex;
 
     RootHubIndex = 0;
-    if((ThisUsbDev.DeviceType == USB_DEV_CLASS_HUB) && (ThisUsbDev.DeviceStatus >= ROOT_DEV_SUCCESS)) // 外部集线器HUB且枚举成功
+    if((ThisUsbDev.DeviceType == USB_DEV_CLASS_HUB) && (ThisUsbDev.DeviceStatus >= ROOT_DEV_SUCCESS)) // External hub HUB and enumeration successful
     {
-        for(HubPortIndex = 1; HubPortIndex <= ThisUsbDev.GpHUBPortNum; HubPortIndex++) // 搜索外部HUB的各个端口
+        for(HubPortIndex = 1; HubPortIndex <= ThisUsbDev.GpHUBPortNum; HubPortIndex++) // Search each port of the external HUB
         {
             if(DevOnHubPort[HubPortIndex - 1].DeviceType == type && DevOnHubPort[HubPortIndex - 1].DeviceStatus >= ROOT_DEV_SUCCESS)
             {
-                return (((uint16_t)RootHubIndex << 8) | HubPortIndex); // 类型匹配且枚举成功
+                return (((uint16_t)RootHubIndex << 8) | HubPortIndex); // Type matches and enumeration successful
             }
         }
     }
     if((ThisUsbDev.DeviceType == type) && (ThisUsbDev.DeviceStatus >= ROOT_DEV_SUCCESS))
     {
-        return ((uint16_t)RootHubIndex << 8); // 类型匹配且枚举成功,在ROOT-HUB端口上
+        return ((uint16_t)RootHubIndex << 8); // Type matches and enumeration successful, on the ROOT-HUB port
     }
 
     return (0xFFFF);
@@ -682,11 +682,11 @@ uint16_t SearchTypeDevice(uint8_t type)
 /*********************************************************************
  * @fn      SETorOFFNumLock
  *
- * @brief   NumLock的点灯判断
+ * @brief   NumLock LED control determination
  *
- * @param   buf     - 点灯键值
+ * @param   buf     - LED control key value
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t SETorOFFNumLock(uint8_t *buf)
 {
@@ -698,7 +698,7 @@ uint8_t SETorOFFNumLock(uint8_t *buf)
         {
             ((uint8_t *)pSetupReq)[s] = tmp[s];
         }
-        s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
+        s = HostCtrlTransfer(Com_Buffer, &len); // Execute control transfer
         if(s != ERR_SUCCESS)
         {
             return (s);
@@ -710,11 +710,11 @@ uint8_t SETorOFFNumLock(uint8_t *buf)
 /*********************************************************************
  * @fn      CtrlGetHIDDeviceReport
  *
- * @brief   获取HID设备报表描述符,返回在TxBuffer中
+ * @brief   Get HID device report descriptor, returned in TxBuffer
  *
  * @param   none
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t CtrlGetHIDDeviceReport(uint8_t infc)
 {
@@ -723,7 +723,7 @@ uint8_t CtrlGetHIDDeviceReport(uint8_t infc)
 
     CopySetupReqPkg(SetupSetHIDIdle);
     pSetupReq->wIndex = infc;
-    s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
+    s = HostCtrlTransfer(Com_Buffer, &len); // Execute control transfer
     if(s != ERR_SUCCESS)
     {
         return (s);
@@ -731,7 +731,7 @@ uint8_t CtrlGetHIDDeviceReport(uint8_t infc)
 
     CopySetupReqPkg(SetupGetHIDDevReport);
     pSetupReq->wIndex = infc;
-    s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
+    s = HostCtrlTransfer(Com_Buffer, &len); // Execute control transfer
     if(s != ERR_SUCCESS)
     {
         return (s);
@@ -743,11 +743,11 @@ uint8_t CtrlGetHIDDeviceReport(uint8_t infc)
 /*********************************************************************
  * @fn      CtrlGetHubDescr
  *
- * @brief   获取HUB描述符,返回在Com_Buffer中
+ * @brief   Get HUB descriptor, returned in Com_Buffer
  *
  * @param   none
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t CtrlGetHubDescr(void)
 {
@@ -755,27 +755,27 @@ uint8_t CtrlGetHubDescr(void)
     uint8_t len;
 
     CopySetupReqPkg(SetupGetHubDescr);
-    s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
+    s = HostCtrlTransfer(Com_Buffer, &len); // Execute control transfer
     if(s != ERR_SUCCESS)
     {
         return (s);
     }
     if(len < ((PUSB_SETUP_REQ)SetupGetHubDescr)->wLength)
     {
-        return (ERR_USB_BUF_OVER); // 描述符长度错误
+        return (ERR_USB_BUF_OVER); // Descriptor length error
     }
-    //  if ( len < 4 ) return( ERR_USB_BUF_OVER );                                 // 描述符长度错误
+    //  if ( len < 4 ) return( ERR_USB_BUF_OVER );                                 // Descriptor length error
     return (ERR_SUCCESS);
 }
 
 /*********************************************************************
  * @fn      HubGetPortStatus
  *
- * @brief   查询HUB端口状态,返回在Com_Buffer中
+ * @brief   Query HUB port status, return in Com_Buffer
  *
- * @param   HubPortIndex    - 端口号
+ * @param   HubPortIndex    - Port number
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t HubGetPortStatus(uint8_t HubPortIndex)
 {
@@ -787,14 +787,14 @@ uint8_t HubGetPortStatus(uint8_t HubPortIndex)
     pSetupReq->wValue = 0x0000;
     pSetupReq->wIndex = 0x0000 | HubPortIndex;
     pSetupReq->wLength = 0x0004;
-    s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
+    s = HostCtrlTransfer(Com_Buffer, &len); // Execute control transfer
     if(s != ERR_SUCCESS)
     {
         return (s);
     }
     if(len < 4)
     {
-        return (ERR_USB_BUF_OVER); // 描述符长度错误
+        return (ERR_USB_BUF_OVER); // Descriptor length error
     }
     return (ERR_SUCCESS);
 }
@@ -802,12 +802,12 @@ uint8_t HubGetPortStatus(uint8_t HubPortIndex)
 /*********************************************************************
  * @fn      HubSetPortFeature
  *
- * @brief   设置HUB端口特性
+ * @brief   Set HUB port feature
  *
- * @param   HubPortIndex    - 端口号
- * @param   FeatureSelt     - 端口特性
+ * @param   HubPortIndex    - Port number
+ * @param   FeatureSelt     - Port feature
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t HubSetPortFeature(uint8_t HubPortIndex, uint8_t FeatureSelt)
 {
@@ -816,18 +816,18 @@ uint8_t HubSetPortFeature(uint8_t HubPortIndex, uint8_t FeatureSelt)
     pSetupReq->wValue = 0x0000 | FeatureSelt;
     pSetupReq->wIndex = 0x0000 | HubPortIndex;
     pSetupReq->wLength = 0x0000;
-    return (HostCtrlTransfer(NULL, NULL)); // 执行控制传输
+    return (HostCtrlTransfer(NULL, NULL)); // Execute control transfer
 }
 
 /*********************************************************************
  * @fn      HubClearPortFeature
  *
- * @brief   清除HUB端口特性
+ * @brief   Clear HUB port feature
  *
- * @param   HubPortIndex    - 端口号
- * @param   FeatureSelt     - 端口特性
+ * @param   HubPortIndex    - Port number
+ * @param   FeatureSelt     - Port feature
  *
- * @return  错误码
+ * @return  Error code
  */
 uint8_t HubClearPortFeature(uint8_t HubPortIndex, uint8_t FeatureSelt)
 {
@@ -836,5 +836,5 @@ uint8_t HubClearPortFeature(uint8_t HubPortIndex, uint8_t FeatureSelt)
     pSetupReq->wValue = 0x0000 | FeatureSelt;
     pSetupReq->wIndex = 0x0000 | HubPortIndex;
     pSetupReq->wLength = 0x0000;
-    return (HostCtrlTransfer(NULL, NULL)); // 执行控制传输
+    return (HostCtrlTransfer(NULL, NULL)); // Execute control transfer
 }

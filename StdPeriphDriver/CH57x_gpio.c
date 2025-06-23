@@ -15,10 +15,10 @@
 /*********************************************************************
  * @fn      GPIOA_ModeCfg
  *
- * @brief   GPIOA端口引脚模式配置
+ * @brief   GPIOA port pin mode configuration
  *
  * @param   pin     - PA0-PA15
- * @param   mode    - 输入输出类型
+ * @param   mode    - Input/output type
  *
  * @return  none
  */
@@ -62,10 +62,10 @@ void GPIOA_ModeCfg(uint32_t pin, GPIOModeTypeDef mode)
 /*********************************************************************
  * @fn      GPIOA_ITModeCfg
  *
- * @brief   GPIOA引脚中断模式配置
+ * @brief   GPIOA pin interrupt mode configuration
  *
  * @param   pin     - PA0-PA15
- * @param   mode    - 触发类型
+ * @param   mode    - Trigger type
  *
  * @return  none
  */
@@ -73,22 +73,22 @@ void GPIOA_ITModeCfg(uint32_t pin, GPIOITModeTpDef mode)
 {
     switch(mode)
     {
-        case GPIO_ITMode_LowLevel: // 低电平触发
+        case GPIO_ITMode_LowLevel: // Low level trigger
             R16_PA_INT_MODE &= ~pin;
             R32_PA_CLR |= pin;
             break;
 
-        case GPIO_ITMode_HighLevel: // 高电平触发
+        case GPIO_ITMode_HighLevel: // High level trigger
             R16_PA_INT_MODE &= ~pin;
             R32_PA_OUT |= pin;
             break;
 
-        case GPIO_ITMode_FallEdge: // 下降沿触发
+        case GPIO_ITMode_FallEdge: // Falling edge trigger
             R16_PA_INT_MODE |= pin;
             R32_PA_CLR |= pin;
             break;
 
-        case GPIO_ITMode_RiseEdge: // 上升沿触发
+        case GPIO_ITMode_RiseEdge: // Rising edge trigger
             R16_PA_INT_MODE |= pin;
             R32_PA_OUT |= pin;
             break;
@@ -103,10 +103,10 @@ void GPIOA_ITModeCfg(uint32_t pin, GPIOITModeTpDef mode)
 /*********************************************************************
  * @fn      GPIOPinRemap
  *
- * @brief   外设功能引脚映射
+ * @brief   Peripheral function pin mapping
  *
- * @param   s       - 是否使能映射
- * @param   perph   - 写具体的映射关系，详见GPIO_pins_remap_define
+ * @param   s       - Whether to enable mapping
+ * @param   perph   - The specific mapping relationship, see GPIO_pins_remap_define for details
  *
  *
  * @return  none
@@ -126,9 +126,9 @@ void GPIOPinRemap(FunctionalState s, uint16_t perph)
 /*********************************************************************
  * @fn      GPIOADigitalCfg
  *
- * @brief   I/O pin数字功能控制
+ * @brief   I/O pin digital function control
  *
- * @param   s       - 是否打开对应I/O pin数字功能
+ * @param   s       - Whether to enable the corresponding I/O pin digital function
  * @param   pin     - PA0-PA11
  */
 void GPIOADigitalCfg(FunctionalState s, uint16_t pin)

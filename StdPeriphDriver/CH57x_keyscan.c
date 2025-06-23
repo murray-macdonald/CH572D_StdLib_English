@@ -15,12 +15,12 @@
 /*********************************************************************
  * @fn      KeyScan_Cfg
  *
- * @brief   配置按键扫描功能
+ * @brief   Configure key scanning function
  *
- * @param   s            -  设置是否开启按键扫描功能
- * @param   keyScanPin   -  设置参与按键扫描的IO使能
- * @param   ClkDiv       -  设置扫描时钟分频，时钟来源LSI
- * @param   Rep          -  设置扫描到相同按键值次数
+ * @param   s            -  Set whether to enable key scanning function
+ * @param   keyScanPin   -  Set the IO pins enabled for key scanning
+ * @param   ClkDiv       -  Set scan clock division, clock source is LSI
+ * @param   Rep          -  Set the number of times to scan the same key value
  *
  * @return  none
  */
@@ -40,9 +40,9 @@ void KeyScan_Cfg(uint8_t s, uint16_t keyScanPin, uint16_t ClkDiv, uint16_t Rep)
 /*********************************************************************
  * @fn      KeyPress_Wake
  *
- * @brief   按键按下唤醒睡眠使能
+ * @brief   Enable key press wake up from sleep
  *
- * @param   s            -  设置是否开启按键唤醒功能
+ * @param   s            -  Set whether to enable key wake-up function
  *
  * @return  none
  */

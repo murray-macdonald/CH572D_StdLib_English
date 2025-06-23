@@ -1,5 +1,5 @@
 /********************************** (C) COPYRIGHT *******************************
- * File Name          : CH57x_timer0.c
+ * File Name          : CH57x_timer.c
  * Author             : WCH
  * Version            : V1.2
  * Date               : 2021/11/17
@@ -15,9 +15,9 @@
 /*********************************************************************
  * @fn      TMR_TimerInit
  *
- * @brief   定时功能初始化
+ * @brief   Timer function initialization
  *
- * @param   t       - 定时时间，基于当前系统时钟Tsys, 最长定时周期 67108864
+ * @param   t       - Timer duration, based on current system clock Tsys, maximum timing period 67108864
  *
  * @return  none
  */
@@ -31,9 +31,9 @@ void TMR_TimerInit(uint32_t t)
 /*********************************************************************
  * @fn      TMR_EXTSingleCounterInit
  *
- * @brief   边沿计数功能初始化
+ * @brief   Edge counting function initialization
  *
- * @param   cap     - 采集计数类型
+ * @param   cap     - Capture count type
  *
  * @return  none
  */
@@ -46,7 +46,7 @@ void TMR_EXTSingleCounterInit(CapModeTypeDef cap)
 /*********************************************************************
  * @fn      TMR_PWMInit
  *
- * @brief   PWM 输出初始化
+ * @brief   PWM output initialization
  *
  * @param   pr      - select wave polar, refer to PWMX_PolarTypeDef
  * @param   ts      - set pwm repeat times, refer to PWM_RepeatTsTypeDef
@@ -62,7 +62,7 @@ void TMR_PWMInit(PWMX_PolarTypeDef pr, PWM_RepeatTsTypeDef ts)
 /*********************************************************************
  * @fn      TMR_CapInit
  *
- * @brief   外部信号捕捉功能初始化
+ * @brief   External signal capture function initialization
  *
  * @param   cap     - select capture mode, refer to CapModeTypeDef
  *
@@ -78,12 +78,12 @@ void TMR_CapInit(CapModeTypeDef cap)
 /*********************************************************************
  * @fn      TMR_DMACfg
  *
- * @brief   配置DMA功能
+ * @brief   Configure DMA function
  *
- * @param   s           - 是否打开DMA功能
- * @param   startAddr   - DMA 起始地址
- * @param   endAddr     - DMA 结束地址
- * @param   m           - 配置DMA模式
+ * @param   s           - Enable or disable DMA function
+ * @param   startAddr   - DMA start address
+ * @param   endAddr     - DMA end address
+ * @param   m           - Configure DMA mode
  *
  * @return  none
  */
@@ -108,11 +108,11 @@ void TMR_DMACfg(uint8_t s, uint32_t startAddr, uint32_t endAddr, DMAModeTypeDef 
 /*********************************************************************
  * @fn      ENC_Config
  *
- * @brief   配置编码器功能
+ * @brief   Configure encoder function
  *
- * @param   s           - 是否开启编码器功能
- * @param   encReg      - 编码器模式终值(最大值0xFFFF)
- * @param   m           - 配置ENC模式
+ * @param   s           - Enable or disable encoder function
+ * @param   encReg      - Encoder mode end value (maximum value 0xFFFF)
+ * @param   m           - Configure ENC mode
  *
  * @return  none
  */

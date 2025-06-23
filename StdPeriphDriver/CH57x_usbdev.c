@@ -20,7 +20,7 @@ uint8_t *pEP3_RAM_Addr;
 /*********************************************************************
  * @fn      USB_DeviceInit
  *
- * @brief   USB设备功能初始化，4个端点，8个通道。
+ * @brief   USB device function initialization, 4 endpoints, 8 channels.
  *
  * @param   none
  *
@@ -28,10 +28,10 @@ uint8_t *pEP3_RAM_Addr;
  */
 void USB_DeviceInit(void)
 {
-    R8_USB_CTRL = 0x00; // 先设定模式,取消 RB_UC_CLR_ALL
+    R8_USB_CTRL = 0x00; // First set mode, cancel RB_UC_CLR_ALL
 
-    R8_UEP4_1_MOD = RB_UEP4_RX_EN | RB_UEP4_TX_EN | RB_UEP1_RX_EN | RB_UEP1_TX_EN; // 端点4 OUT+IN,端点1 OUT+IN
-    R8_UEP2_3_MOD = RB_UEP2_RX_EN | RB_UEP2_TX_EN | RB_UEP3_RX_EN | RB_UEP3_TX_EN; // 端点2 OUT+IN,端点3 OUT+IN
+    R8_UEP4_1_MOD = RB_UEP4_RX_EN | RB_UEP4_TX_EN | RB_UEP1_RX_EN | RB_UEP1_TX_EN; // Endpoint 4 OUT+IN, endpoint 1 OUT+IN
+    R8_UEP2_3_MOD = RB_UEP2_RX_EN | RB_UEP2_TX_EN | RB_UEP3_RX_EN | RB_UEP3_TX_EN; // Endpoint 2 OUT+IN, endpoint 3 OUT+IN
 
     R16_UEP0_DMA = (uint16_t)(uint32_t)pEP0_RAM_Addr;
     R16_UEP1_DMA = (uint16_t)(uint32_t)pEP1_RAM_Addr;
@@ -45,19 +45,19 @@ void USB_DeviceInit(void)
     R8_UEP4_CTRL = UEP_R_RES_ACK | UEP_T_RES_NAK;
 
     R8_USB_DEV_AD = 0x00;
-    R8_USB_CTRL = RB_UC_DEV_PU_EN | RB_UC_INT_BUSY | RB_UC_DMA_EN; // 启动USB设备及DMA，在中断期间中断标志未清除前自动返回NAK
-    R16_PIN_ALTERNATE |= RB_PIN_USB_EN | RB_UDP_PU_EN;         // 防止USB端口浮空及上拉电阻
-    R8_USB_INT_FG = 0xFF;                                          // 清中断标志
-    R8_UDEV_CTRL = RB_UD_PD_DIS | RB_UD_PORT_EN;                   // 允许USB端口
+    R8_USB_CTRL = RB_UC_DEV_PU_EN | RB_UC_INT_BUSY | RB_UC_DMA_EN; // Enable USB device and DMA, automatically return NAK before interrupt flag is cleared during interrupt period
+    R16_PIN_ALTERNATE |= RB_PIN_USB_EN | RB_UDP_PU_EN;         // Prevent USB port from floating and enable pull-up resistor
+    R8_USB_INT_FG = 0xFF;                                          // Clear interrupt flags
+    R8_UDEV_CTRL = RB_UD_PD_DIS | RB_UD_PORT_EN;                   // Enable USB port
     R8_USB_INT_EN = RB_UIE_SUSPEND | RB_UIE_BUS_RST | RB_UIE_TRANSFER;
 }
 
 /*********************************************************************
  * @fn      DevEP1_IN_Deal
  *
- * @brief   端点1数据上传
+ * @brief   Endpoint 1 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  *
  * @return  none
  */
@@ -70,9 +70,9 @@ void DevEP1_IN_Deal(uint8_t l)
 /*********************************************************************
  * @fn      DevEP2_IN_Deal
  *
- * @brief   端点2数据上传
+ * @brief   Endpoint 2 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  *
  * @return  none
  */
@@ -85,9 +85,9 @@ void DevEP2_IN_Deal(uint8_t l)
 /*********************************************************************
  * @fn      DevEP3_IN_Deal
  *
- * @brief   端点3数据上传
+ * @brief   Endpoint 3 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  *
  * @return  none
  */
@@ -100,9 +100,9 @@ void DevEP3_IN_Deal(uint8_t l)
 /*********************************************************************
  * @fn      DevEP4_IN_Deal
  *
- * @brief   端点4数据上传
+ * @brief   Endpoint 4 data upload
  *
- * @param   l   - 上传数据长度(<64B)
+ * @param   l   - Upload data length (<64B)
  *
  * @return  none
  */

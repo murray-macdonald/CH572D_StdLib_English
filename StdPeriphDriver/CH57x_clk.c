@@ -13,16 +13,16 @@
 #include "CH57x_common.h"
 
 /**
- * @brief  LSI时钟（Hz）
+ * @brief  LSI clock (Hz)
  */
 uint32_t Freq_LSI = 0;
 
 /*********************************************************************
  * @fn      LClk_Cfg
  *
- * @brief   低频时钟电源配置
+ * @brief   Low frequency clock power configuration
  *
- * @param   s   - 是否打开电源
+ * @param   s   - Whether to turn on the power
  *
  * @return  none
  */
@@ -47,7 +47,7 @@ void LClk_Cfg(FunctionalState s)
 /*********************************************************************
  * @fn      HSECFG_Current
  *
- * @brief   HSE晶体 偏置电流配置
+ * @brief   HSE crystal bias current configuration
  *
  * @param   c   - 75%,100%,125%,150%
  *
@@ -68,7 +68,7 @@ void HSECFG_Current(HSECurrentTypeDef c)
 /*********************************************************************
  * @fn      HSECFG_Capacitance
  *
- * @brief   HSE晶体 负载电容配置
+ * @brief   HSE crystal load capacitance configuration
  *
  * @param   c   - refer to HSECapTypeDef
  *
@@ -89,11 +89,11 @@ void HSECFG_Capacitance(HSECapTypeDef c)
 /*********************************************************************
  * @fn      RTC_InitClock
  *
- * @brief   初始化 RTC时钟, 捕获周期数越高,初始化时间越长,时钟精度越高
+ * @brief   Initialize RTC clock, higher capture cycles leads to longer initialization time but higher clock accuracy
  *
  * @param   cnt     - the total number of cycles captured by the oscillator
  *
- * @return  RTC时钟, 24~42KHz
+ * @return  RTC clock, 24~42KHz
  */
 uint32_t RTC_InitClock(RTC_OSCCntTypeDef cnt)
 {
@@ -142,14 +142,14 @@ uint32_t RTC_InitClock(RTC_OSCCntTypeDef cnt)
 /*********************************************************************
  * @fn      RTCInitTime
  *
- * @brief   RTC时钟初始化当前时间，注意：万年历计数根据实时LSI频率计数，当LSI频率有较大波动时，获取到的时钟会有偏差。
+ * @brief   RTC clock initialization of current time, note: the calendar counting is based on real-time LSI frequency, when LSI frequency fluctuates significantly, the obtained clock will have deviation.
  *
- * @param   y       - 配置年，MAX_Y = BEGYEAR + 44
- * @param   mon     - 配置月，MAX_MON = 12
- * @param   d       - 配置日，MAX_D = 31
- * @param   h       - 配置小时，MAX_H = 23
- * @param   m       - 配置分钟，MAX_M = 59
- * @param   s       - 配置秒，MAX_S = 59
+ * @param   y       - Configure year, MAX_Y = BEGYEAR + 44
+ * @param   mon     - Configure month, MAX_MON = 12
+ * @param   d       - Configure day, MAX_D = 31
+ * @param   h       - Configure hour, MAX_H = 23
+ * @param   m       - Configure minute, MAX_M = 59
+ * @param   s       - Configure second, MAX_S = 59
  *
  * @return  none
  */
@@ -183,29 +183,29 @@ void RTC_InitTime(uint16_t y, uint16_t mon, uint16_t d, uint16_t h, uint16_t m, 
     t = t << 16 | t32k;
 
     temp = day * Freq_LSI;
-    temp1 = temp % 32768; // 天数余数
-    temp = temp / 32768; // 天数
+    temp1 = temp % 32768; // Remainder of days
+    temp = temp / 32768; // Days
 
     temp2 = temp1 * 675; // temp1 / 32768 * 2831155200 / 65536
-    temp3 = temp2 % 512;   // 天数余数 转换成2s为单位的余数
-    temp2 = temp2 / 512;   // 天数余数 转换成2s为单位的数
+    temp3 = temp2 % 512;   // Convert remainder of days to remainder in 2s units
+    temp2 = temp2 / 512;   // Convert remainder of days to value in 2s units
 
-    temp1 = temp3 * 128; // 2s为单位的余数 转换成 周期数  temp3 / 512 * 65536
+    temp1 = temp3 * 128; // Convert remainder in 2s units to cycle count temp3 / 512 * 65536
 
     tmp = sec2 * Freq_LSI;
-    tmp1 = tmp % 32768; // 2s余数
-    tmp = tmp / 32768; // 2s数
+    tmp1 = tmp % 32768; // Remainder in 2s units
+    tmp = tmp / 32768; // Value in 2s units
 
-    tmp2 = tmp1 * 2 ; //  2s为单位的余数 转换成 周期数  // tmp1 / 32768 * 65536
+    tmp2 = tmp1 * 2 ; //  Convert remainder in 2s units to cycle count  // tmp1 / 32768 * 65536
 
-    t32k = (t32k * Freq_LSI + 16384) / 32768; // 周期数
+    t32k = (t32k * Freq_LSI + 16384) / 32768; // Cycle count
 
-    t32k += tmp2 + temp1; // 总周期数
-    tmp += (t32k/65536) + temp2; // 总2s数
-    temp += (tmp/43200);    // 天数
+    t32k += tmp2 + temp1; // Total cycle count
+    tmp += (t32k/65536) + temp2; // Total 2s count
+    temp += (tmp/43200);    // Days
 
-    t32k %= 65536;  // 周期数
-    tmp %= 43200;   // 2s数
+    t32k %= 65536;  // Cycle count
+    tmp %= 43200;   // 2s count
 
     t = tmp;     // 64000
     t = t << 16 | t32k; // 1
@@ -240,14 +240,14 @@ void RTC_InitTime(uint16_t y, uint16_t mon, uint16_t d, uint16_t h, uint16_t m, 
 /*********************************************************************
  * @fn      RTC_GetTime
  *
- * @brief   获取当前时间
+ * @brief   Get current time
  *
- * @param   py      - 获取到的年，MAX_Y = BEGYEAR + 44
- * @param   pmon    - 获取到的月，MAX_MON = 12
- * @param   pd      - 获取到的日，MAX_D = 31
- * @param   ph      - 获取到的小时，MAX_H = 23
- * @param   pm      - 获取到的分钟，MAX_M = 59
- * @param   ps      - 获取到的秒，MAX_S = 59
+ * @param   py      - Year to get, MAX_Y = BEGYEAR + 44
+ * @param   pmon    - Month to get, MAX_MON = 12
+ * @param   pd      - Day to get, MAX_D = 31
+ * @param   ph      - Hour to get, MAX_H = 23
+ * @param   pm      - Minute to get, MAX_M = 59
+ * @param   ps      - Second to get, MAX_S = 59
  *
  * @return  none
  */
@@ -263,30 +263,30 @@ void RTC_GetTime(uint16_t *py, uint16_t *pmon, uint16_t *pd, uint16_t *ph, uint1
     t32k = R16_RTC_CNT_LSI;
 
     temp = day * 32768;
-    temp1 = temp % Freq_LSI; // 天数余数
-    temp = temp / Freq_LSI; // 天数
+    temp1 = temp % Freq_LSI; // Remainder of days
+    temp = temp / Freq_LSI; // Days
 
     temp2 = temp1 * 43200; // temp1 / Freq_LSI * 43200
-    temp3 = temp2 % Freq_LSI;   // 天数余数 转换成2s为单位的余数
-    temp2 = temp2 / Freq_LSI;   // 天数余数 转换成2s为单位的数
+    temp3 = temp2 % Freq_LSI;   // Convert remainder of days to remainder in 2s units
+    temp2 = temp2 / Freq_LSI;   // Convert remainder of days to value in 2s units
 
-    temp1 = (temp3 * 65536 + Freq_LSI/2 ) / Freq_LSI; // 2s为单位的余数 转换成 周期数  temp3 / Freq_LSI * 65536
+    temp1 = (temp3 * 65536 + Freq_LSI/2 ) / Freq_LSI; // Convert remainder in 2s units to cycle count temp3 / Freq_LSI * 65536
 
     tmp = sec2 * 32768;
-    tmp1 = tmp % Freq_LSI; // 2s余数           5376
-    tmp = tmp / Freq_LSI; // 2s数                 1799
+    tmp1 = tmp % Freq_LSI; // Remainder in 2s units           5376
+    tmp = tmp / Freq_LSI; // Value in 2s units                 1799
 
-    tmp2 = (tmp1 * 65536 + Freq_LSI/2 ) / Freq_LSI; //  2s为单位的余数 转换成 周期数  // tmp1 / Freq_LSI * 65536  11010
+    tmp2 = (tmp1 * 65536 + Freq_LSI/2 ) / Freq_LSI; //  Convert remainder in 2s units to cycle count  // tmp1 / Freq_LSI * 65536  11010
 
-    t32k = (t32k * 32768 + Freq_LSI/2 ) / Freq_LSI; // 周期数       54525
+    t32k = (t32k * 32768 + Freq_LSI/2 ) / Freq_LSI; // Cycle count       54525
 
 
-    t32k += tmp2 + temp1; // 总周期数
-    tmp += (t32k/65536) + temp2; // 总2s数
-    temp += (tmp/43200);    // 天数
+    t32k += tmp2 + temp1; // Total cycle count
+    tmp += (t32k/65536) + temp2; // Total 2s count
+    temp += (tmp/43200);    // Days
 
-    t32k %= 65536;  // 周期数
-    tmp %= 43200;   // 2s数
+    t32k %= 65536;  // Cycle count
+    tmp %= 43200;   // 2s count
 
 
     t = tmp * 2 + ((t32k < 0x8000) ? 0 : 1);
@@ -314,9 +314,9 @@ void RTC_GetTime(uint16_t *py, uint16_t *pmon, uint16_t *pd, uint16_t *ph, uint1
 /*********************************************************************
  * @fn      RTC_SetCycleLSI
  *
- * @brief   基于LSI时钟，配置当前RTC 周期数
+ * @brief   Based on LSI clock, configure the current RTC cycle count
  *
- * @param   cyc     - 配置周期计数初值，MAX_CYC = 0xA8BFFFFF = 2831155199
+ * @param   cyc     - Configure the initial cycle count value, MAX_CYC = 0xA8BFFFFF = 2831155199
  *
  * @return  none
  */
@@ -338,11 +338,11 @@ void RTC_SetCycleLSI(uint32_t cyc)
 /*********************************************************************
  * @fn      RTC_GetCycleLSI
  *
- * @brief   基于LSI时钟，获取当前RTC 周期数
+ * @brief   Based on LSI clock, get the current RTC cycle count
  *
  * @param   none
  *
- * @return  当前周期数，MAX_CYC = 0xA8BFFFFF = 2831155199
+ * @return  Current cycle count, MAX_CYC = 0xA8BFFFFF = 2831155199
  */
 uint32_t RTC_GetCycleLSI(void)
 {
@@ -359,7 +359,7 @@ uint32_t RTC_GetCycleLSI(void)
 /*********************************************************************
  * @fn      RTC_TMRFunCfg
  *
- * @brief   RTC定时模式配置（注意定时基准固定为32768Hz）
+ * @brief   RTC timer mode configuration (note: timer reference is fixed at 32768Hz)
  *
  * @param   t   - refer to RTC_TMRCycTypeDef
  *
@@ -378,9 +378,9 @@ void RTC_TMRFunCfg(RTC_TMRCycTypeDef t)
 /*********************************************************************
  * @fn      RTC_TRIGFunCfg
  *
- * @brief   RTC时间触发模式配置
+ * @brief   RTC time trigger mode configuration
  *
- * @param   cyc - 相对当前时间的触发间隔时间，基于LSI时钟周期数
+ * @param   cyc - Trigger interval time relative to current time, based on LSI clock cycles
  *
  * @return  none
  */
@@ -403,9 +403,9 @@ void RTC_TRIGFunCfg(uint32_t cyc)
 /*********************************************************************
  * @fn      RTC_ModeFunDisable
  *
- * @brief   RTC 模式功能关闭
+ * @brief   RTC mode function disable
  *
- * @param   m   - 需要关闭的当前模式
+ * @param   m   - Current mode to be disabled
  *
  * @return  none
  */
@@ -430,11 +430,11 @@ void RTC_ModeFunDisable(RTC_MODETypeDef m)
 /*********************************************************************
  * @fn      RTC_GetITFlag
  *
- * @brief   获取RTC中断标志
+ * @brief   Get RTC interrupt flag
  *
  * @param   f   - refer to RTC_EVENTTypeDef
  *
- * @return  中断标志状态
+ * @return  Interrupt flag status
  */
 uint8_t RTC_GetITFlag(RTC_EVENTTypeDef f)
 {
@@ -451,7 +451,7 @@ uint8_t RTC_GetITFlag(RTC_EVENTTypeDef f)
 /*********************************************************************
  * @fn      RTC_ClearITFlag
  *
- * @brief   清除RTC中断标志
+ * @brief   Clear RTC interrupt flag
  *
  * @param   f   - refer to RTC_EVENTTypeDef
  *
