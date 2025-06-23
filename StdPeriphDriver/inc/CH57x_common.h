@@ -47,7 +47,7 @@
 #endif
 
 /**
- * @brief  系统主频时钟（Hz）
+ * @brief  System Main Frequency Clock (Hz)
  */
 #ifndef	 FREQ_SYS
 #define  FREQ_SYS		100000000
@@ -78,7 +78,7 @@
 #include "ISP572.h"
 
  /**
-  * @brief  LSI时钟（Hz）
+  * @brief  Low Speed Internal Clock (Hz)
   */
  extern uint32_t Freq_LSI;
 
