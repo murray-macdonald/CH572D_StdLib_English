@@ -66,4 +66,4 @@ These files are based on the original CH572 library code provided by WCH (Nanjin
 ## Copyright Notice
 
 Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-This software (modified or not) and binary are used for microcontroller manufactured by Nanjing Qinheng Microelectronics.
+This software (modified or not) and binary are used for te CH572D microcontroller manufactured by Nanjing Qinheng Microelectronics.
