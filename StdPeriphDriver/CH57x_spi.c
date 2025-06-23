@@ -15,7 +15,7 @@
 /*********************************************************************
  * @fn      SPI_MasterDefInit
  *
- * @brief   主机模式默认初始化：模式0+3线全双工+8MHz
+ * @brief   Master mode default initialization: Mode 0 + 3-wire full-duplex + 8MHz
  *
  * @param   none
  *
@@ -23,17 +23,17 @@
  */
 void SPI_MasterDefInit(void)
 {
-    R8_SPI_CLOCK_DIV = 4; // 主频时钟4分频
+    R8_SPI_CLOCK_DIV = 4; // Main clock divided by 4
     R8_SPI_CTRL_MOD = RB_SPI_ALL_CLEAR;
     R8_SPI_CTRL_MOD = RB_SPI_MOSI_OE | RB_SPI_SCK_OE;
-    R8_SPI_CTRL_CFG |= RB_SPI_AUTO_IF;     // 访问BUFFER/FIFO自动清除IF_BYTE_END标志
-    R8_SPI_CTRL_CFG &= ~RB_SPI_DMA_ENABLE; // 不启动DMA方式
+    R8_SPI_CTRL_CFG |= RB_SPI_AUTO_IF;     // Automatically clear IF_BYTE_END flag when accessing BUFFER/FIFO
+    R8_SPI_CTRL_CFG &= ~RB_SPI_DMA_ENABLE; // Do not enable DMA mode
 }
 
 /*********************************************************************
  * @fn      SPI_2WIRE_MasterOutputInit
  *
- * @brief   主机2线发送模式初始化：模式1+2线半双工+8MHz
+ * @brief   Master 2-wire transmission mode initialization: Mode 1 + 2-wire half-duplex + 8MHz
  *
  * @param   none
  *
@@ -41,17 +41,17 @@ void SPI_MasterDefInit(void)
  */
 void SPI_2WIRE_MasterOutputInit(void)
 {
-    R8_SPI_CLOCK_DIV = 4; // 主频时钟4分频
+    R8_SPI_CLOCK_DIV = 4; // Main clock divided by 4
     R8_SPI_CTRL_MOD = RB_SPI_ALL_CLEAR;
-    R8_SPI_CTRL_MOD =  RB_SPI_MOSI_OE | RB_SPI_SCK_OE | RB_SPI_2WIRE_MOD;  // 使能两线模式
-    R8_SPI_CTRL_CFG |= RB_SPI_AUTO_IF;     // 访问BUFFER/FIFO自动清除IF_BYTE_END标志
-    R8_SPI_CTRL_CFG &= ~RB_SPI_DMA_ENABLE; // 不启动DMA方式
+    R8_SPI_CTRL_MOD =  RB_SPI_MOSI_OE | RB_SPI_SCK_OE | RB_SPI_2WIRE_MOD;  // Enable two-wire mode
+    R8_SPI_CTRL_CFG |= RB_SPI_AUTO_IF;     // Automatically clear IF_BYTE_END flag when accessing BUFFER/FIFO
+    R8_SPI_CTRL_CFG &= ~RB_SPI_DMA_ENABLE; // Do not enable DMA mode
 }
 
 /*********************************************************************
  * @fn      SPI_2WIRE_MasterReceiveInit
  *
- * @brief   主机2线接收模式初始化：模式1+2线半双工+8MHz
+ * @brief   Master 2-wire reception mode initialization: Mode 1 + 2-wire half-duplex + 8MHz
  *
  * @param   none
  *
@@ -59,17 +59,17 @@ void SPI_2WIRE_MasterOutputInit(void)
  */
 void SPI_2WIRE_MasterReceiveInit(void)
 {
-    R8_SPI_CLOCK_DIV = 4; // 主频时钟4分频
+    R8_SPI_CLOCK_DIV = 4; // Main clock divided by 4
     R8_SPI_CTRL_MOD = RB_SPI_ALL_CLEAR;
-    R8_SPI_CTRL_MOD = RB_SPI_SCK_OE | RB_SPI_2WIRE_MOD;  // 使能两线模式
-    R8_SPI_CTRL_CFG |= RB_SPI_AUTO_IF;     // 访问BUFFER/FIFO自动清除IF_BYTE_END标志
-    R8_SPI_CTRL_CFG &= ~RB_SPI_DMA_ENABLE; // 不启动DMA方式
+    R8_SPI_CTRL_MOD = RB_SPI_SCK_OE | RB_SPI_2WIRE_MOD;  // Enable two-wire mode
+    R8_SPI_CTRL_CFG |= RB_SPI_AUTO_IF;     // Automatically clear IF_BYTE_END flag when accessing BUFFER/FIFO
+    R8_SPI_CTRL_CFG &= ~RB_SPI_DMA_ENABLE; // Do not enable DMA mode
 }
 
 /*********************************************************************
  * @fn      SPI_2WIRE_SlaveInputInit
  *
- * @brief   从机2线接收模式初始化：模式1+2线半双工+8MHz
+ * @brief   Slave 2-wire reception mode initialization: Mode 1 + 2-wire half-duplex + 8MHz
  *
  * @param   none
  *
@@ -85,7 +85,7 @@ void SPI_2WIRE_SlaveInputInit(void)
 /*********************************************************************
  * @fn      SPI_2WIRE_SlaveOutputInit
  *
- * @brief   从机2线发送模式初始化：模式1+2线半双工+8MHz
+ * @brief   Slave 2-wire transmission mode initialization: Mode 1 + 2-wire half-duplex + 8MHz
  *
  * @param   none
  *
@@ -101,9 +101,9 @@ void SPI_2WIRE_SlaveOutputInit(void)
 /*********************************************************************
  * @fn      SPI_CLKCfg
  *
- * @brief   SPI 基准时钟配置，= d*Tsys
+ * @brief   SPI reference clock configuration, = d*Tsys
  *
- * @param   c       - 时钟分频系数
+ * @param   c       - Clock division factor
  *
  * @return  none
  */
@@ -123,9 +123,9 @@ void SPI_CLKCfg(uint8_t c)
 /*********************************************************************
  * @fn      SPI_DataMode
  *
- * @brief   设置数据流模式
+ * @brief   Set data stream mode
  *
- * @param   m       - 数据流模式 refer to ModeBitOrderTypeDef
+ * @param   m       - Data stream mode, refer to ModeBitOrderTypeDef
  *
  * @return  none
  */
@@ -157,9 +157,9 @@ void SPI_DataMode(ModeBitOrderTypeDef m)
 /*********************************************************************
  * @fn      SPI_MasterSendByte
  *
- * @brief   发送单字节 (buffer)
+ * @brief   Send a single byte (buffer)
  *
- * @param   d       - 发送字节
+ * @param   d       - Byte to send
  *
  * @return  none
  */
@@ -174,16 +174,16 @@ void SPI_MasterSendByte(uint8_t d)
 /*********************************************************************
  * @fn      SPI_MasterRecvByte
  *
- * @brief   接收单字节 (buffer)
+ * @brief   Receive a single byte (buffer)
  *
  * @param   none
  *
- * @return  接收到的字节
+ * @return  Received byte
  */
 uint8_t SPI_MasterRecvByte(void)
 {
     R8_SPI_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
-    R8_SPI_BUFFER = 0xFF; // 启动传输
+    R8_SPI_BUFFER = 0xFF; // Start transmission
     while(!(R8_SPI_INT_FLAG & RB_SPI_FREE));
     return (R8_SPI_BUFFER);
 }
@@ -191,10 +191,10 @@ uint8_t SPI_MasterRecvByte(void)
 /*********************************************************************
  * @fn      SPI_MasterTrans
  *
- * @brief   使用FIFO连续发送多字节
+ * @brief   Use FIFO to continuously send multiple bytes
  *
- * @param   pbuf    - 待发送的数据内容首地址
- * @param   len     - 请求发送的数据长度，最大4095
+ * @param   pbuf    - Starting address of data content to be sent
+ * @param   len     - Requested length of data to be sent, maximum 4095
  *
  * @return  none
  */
@@ -203,8 +203,8 @@ void SPI_MasterTrans(uint8_t *pbuf, uint16_t len)
     uint16_t sendlen;
 
     sendlen = len;
-    R8_SPI_CTRL_MOD &= ~RB_SPI_FIFO_DIR; // 设置数据方向为输出
-    R16_SPI_TOTAL_CNT = sendlen;         // 设置要发送的数据长度
+    R8_SPI_CTRL_MOD &= ~RB_SPI_FIFO_DIR; // Set data direction to output
+    R16_SPI_TOTAL_CNT = sendlen;         // Set the length of data to be sent
     R8_SPI_INT_FLAG = RB_SPI_IF_CNT_END;
     while(sendlen)
     {
@@ -215,16 +215,16 @@ void SPI_MasterTrans(uint8_t *pbuf, uint16_t len)
             sendlen--;
         }
     }
-    while(R8_SPI_FIFO_COUNT != 0); // 等待FIFO中的数据全部发送完成
+    while(R8_SPI_FIFO_COUNT != 0); // Wait for all data in FIFO to complete transmission
 }
 
 /*********************************************************************
  * @fn      SPI_MasterRecv
  *
- * @brief   使用FIFO连续接收多字节
+ * @brief   Use FIFO to continuously receive multiple bytes
  *
- * @param   pbuf    - 待接收的数据首地址
- * @param   len     - 待接收的数据长度，最大4095
+ * @param   pbuf    - Starting address for received data
+ * @param   len     - Length of data to be received, maximum 4095
  *
  * @return  none
  */
@@ -233,8 +233,8 @@ void SPI_MasterRecv(uint8_t *pbuf, uint16_t len)
     uint16_t readlen;
 
     readlen = len;
-    R8_SPI_CTRL_MOD |= RB_SPI_FIFO_DIR; // 设置数据方向为输入
-    R16_SPI_TOTAL_CNT = len;            // 设置需要接收的数据长度，FIFO方向为输入长度不为0则会启动传输 */
+    R8_SPI_CTRL_MOD |= RB_SPI_FIFO_DIR; // Set data direction to input
+    R16_SPI_TOTAL_CNT = len;            // Set the length of data to be received, transmission starts if FIFO direction is input and length is not 0 */
     R8_SPI_INT_FLAG = RB_SPI_IF_CNT_END;
     while(readlen)
     {
@@ -250,10 +250,10 @@ void SPI_MasterRecv(uint8_t *pbuf, uint16_t len)
 /*********************************************************************
  * @fn      SPI_MasterDMATrans
  *
- * @brief   DMA方式连续发送数据
+ * @brief   DMA mode for continuous data transmission
  *
- * @param   pbuf    - 待发送数据起始地址,需要四字节对其
- * @param   len     - 待发送数据长度
+ * @param   pbuf    - Starting address of data to be sent, must be four-byte aligned
+ * @param   len     - Length of data to be sent
  *
  * @return  none
  */
@@ -272,10 +272,10 @@ void SPI_MasterDMATrans(uint8_t *pbuf, uint16_t len)
 /*********************************************************************
  * @fn      SPI_MasterDMARecv
  *
- * @brief   DMA方式连续接收数据
+ * @brief   DMA mode for continuous data reception
  *
- * @param   pbuf    - 待接收数据存放起始地址,需要四字节对其
- * @param   len     - 待接收数据长度
+ * @param   pbuf    - Starting address to store received data, must be four-byte aligned
+ * @param   len     - Length of data to be received
  *
  * @return  none
  */
@@ -294,7 +294,7 @@ void SPI_MasterDMARecv(uint8_t *pbuf, uint16_t len)
 /*********************************************************************
  * @fn      SPI_SlaveInit
  *
- * @brief   设备模式默认初始化，建议设置MISO的GPIO对应为输入模式
+ * @brief   Default initialization for device mode, recommended to set the GPIO for MISO as input mode
  *
  * @return  none
  */
@@ -308,7 +308,7 @@ void SPI_SlaveInit(void)
 /*********************************************************************
  * @fn      SPI_2WIRE_SlaveInit
  *
- * @brief   设备2线模式初始化
+ * @brief   Device two-wire mode initialization
  *
  * @return  none
  */
@@ -322,9 +322,9 @@ void SPI_2WIRE_SlaveInit(void)
 /*********************************************************************
  * @fn      SPI_SlaveRecvByte
  *
- * @brief   从机模式，接收一字节数据
+ * @brief   Slave mode, receive one byte of data
  *
- * @return  接收到数据
+ * @return  Received data
  */
 uint8_t SPI_SlaveRecvByte(void)
 {
@@ -336,9 +336,9 @@ uint8_t SPI_SlaveRecvByte(void)
 /*********************************************************************
  * @fn      SPI_SlaveSendByte
  *
- * @brief   从机模式，发送一字节数据
+ * @brief   Slave mode, send one byte of data
  *
- * @param   d       - 待发送数据
+ * @param   d       - Data to be sent
  *
  * @return  none
  */
@@ -347,16 +347,16 @@ void SPI_SlaveSendByte(uint8_t d)
     R8_SPI_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R16_SPI_TOTAL_CNT = 1;
     R8_SPI_FIFO = d;
-    while(R8_SPI_FIFO_COUNT != 0); // 等待发送完成
+    while(R8_SPI_FIFO_COUNT != 0); // Wait for transmission to complete
 }
 
 /*********************************************************************
  * @fn      SPI_SlaveRecv
  *
- * @brief   从机模式，接收多字节数据
+ * @brief   Slave mode, receive multiple bytes of data
  *
- * @param   pbuf    - 接收收数据存放起始地址
- * @param   len     - 请求接收数据长度
+ * @param   pbuf    - Starting address to store received data
+ * @param   len     - Requested length of data to receive
  *
  * @return  none
  */
@@ -382,10 +382,10 @@ void SPI_SlaveRecv(uint8_t *pbuf, uint16_t len)
 /*********************************************************************
  * @fn      SPI_SlaveTrans
  *
- * @brief   从机模式，发送多字节数据
+ * @brief   Slave mode, send multiple bytes of data
  *
- * @param   pbuf    - 待发送的数据内容首地址
- * @param   len     - 请求发送的数据长度，最大4095
+ * @param   pbuf    - Starting address of data content to be sent
+ * @param   len     - Requested length of data to be sent, maximum 4095
  *
  * @return  none
  */
@@ -395,7 +395,7 @@ void SPI_SlaveTrans(uint8_t *pbuf, uint16_t len)
     uint16_t sendlen;
 
     sendlen = len;
-    R8_SPI_CTRL_MOD &= ~RB_SPI_FIFO_DIR; // 设置数据方向为输出
+    R8_SPI_CTRL_MOD &= ~RB_SPI_FIFO_DIR; // Set data direction to output
     R8_SPI_INT_FLAG = RB_SPI_IF_CNT_END;
     while(sendlen)
     {
@@ -406,16 +406,16 @@ void SPI_SlaveTrans(uint8_t *pbuf, uint16_t len)
             sendlen--;
         }
     }
-    while(R8_SPI_FIFO_COUNT != 0); // 等待FIFO中的数据全部发送完成
+    while(R8_SPI_FIFO_COUNT != 0); // Wait for all data in FIFO to complete transmission
 }
 
 /*********************************************************************
  * @fn      SPI_SlaveDMARecv
  *
- * @brief   DMA方式连续接收数据
+ * @brief   DMA mode for continuous data reception
  *
- * @param   pbuf    - 待接收数据存放起始地址,需要四字节对其
- * @param   len     - 待接收数据长度
+ * @param   pbuf    - Starting address to store received data, must be four-byte aligned
+ * @param   len     - Length of data to be received
  *
  * @return  none
  */
@@ -434,10 +434,10 @@ void SPI_SlaveDMARecv(uint8_t *pbuf, uint16_t len)
 /*********************************************************************
  * @fn      SPI_SlaveDMATrans
  *
- * @brief   DMA方式连续发送数据
+ * @brief   DMA mode for continuous data transmission
  *
- * @param   pbuf    - 待发送数据起始地址,需要四字节对其
- * @param   len     - 待发送数据长度
+ * @param   pbuf    - Starting address of data to be sent, must be four-byte aligned
+ * @param   len     - Length of data to be sent
  *
  * @return  none
  */
