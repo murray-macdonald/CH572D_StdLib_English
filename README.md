@@ -17,41 +17,41 @@ The CH572 microcontroller documentation and library files originally contain Chi
 
 ## Translation Status
 
-- [ ] StdPeriphDriver
-  - [ ] CH57x_clk.c
-  - [ ] CH57x_cmp.c
-  - [ ] CH57x_flash.c
-  - [ ] CH57x_gpio.c
-  - [ ] CH57x_i2c.c
-  - [ ] CH57x_keyscan.c
-  - [ ] CH57x_pwm.c
-  - [ ] CH57x_pwr.c
-  - [ ] CH57x_spi.c
-  - [ ] CH57x_sys.c
-  - [ ] CH57x_timer.c
-  - [ ] CH57x_uart.c
-  - [ ] CH57x_usbdev.c
-  - [ ] CH57x_usbhostBase.c
-  - [ ] CH57x_usbhostClass.c
+- [X] StdPeriphDriver
+  - [X] CH57x_clk.c
+  - [X] CH57x_cmp.c
+  - [X] CH57x_flash.c
+  - [X] CH57x_gpio.c
+  - [X] CH57x_i2c.c
+  - [X] CH57x_keyscan.c
+  - [X] CH57x_pwm.c
+  - [X] CH57x_pwr.c
+  - [X] CH57x_spi.c
+  - [X] CH57x_sys.c
+  - [X] CH57x_timer.c
+  - [X] CH57x_uart.c
+  - [X] CH57x_usbdev.c
+  - [X] CH57x_usbhostBase.c
+  - [X] CH57x_usbhostClass.c
 
-- [ ] StdPeriphDriver Headers
-  - [ ] CH572SFR.h
-  - [ ] CH57x_clk.h
-  - [ ] CH57x_cmp.h
-  - [x] CH57x_common.h
-  - [ ] CH57x_flash.h
-  - [ ] CH57x_gpio.h
-  - [ ] CH57x_i2c.h
-  - [ ] CH57x_keyscan.h
-  - [ ] CH57x_pwm.h
-  - [ ] CH57x_pwr.h
-  - [ ] CH57x_spi.h
-  - [ ] CH57x_sys.h
-  - [ ] CH57x_timer.h
-  - [ ] CH57x_uart.h
-  - [ ] CH57x_usbdev.h
-  - [ ] CH57x_usbhost.h
-  - [ ] ISP572.h
+- [X] StdPeriphDriver Headers
+  - [X] CH572SFR.h
+  - [X] CH57x_clk.h
+  - [X] CH57x_cmp.h
+  - [X] CH57x_common.h
+  - [X] CH57x_flash.h
+  - [X] CH57x_gpio.h
+  - [X] CH57x_i2c.h
+  - [X] CH57x_keyscan.h
+  - [X] CH57x_pwm.h
+  - [X] CH57x_pwr.h
+  - [X] CH57x_spi.h
+  - [X] CH57x_sys.h
+  - [X] CH57x_timer.h
+  - [X] CH57x_uart.h
+  - [X] CH57x_usbdev.h
+  - [X] CH57x_usbhost.h
+  - [x] ISP572.h
 
 ## Usage
 
